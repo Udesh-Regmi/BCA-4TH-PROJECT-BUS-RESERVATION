@@ -5,7 +5,7 @@ class Database {
     private $host = "localhost";
     private $db_name = "bus_reservation";
     private $username = "root";        // Your MySQL username
-    private $password = "Udesh_1109";  
+    private $password = "";  
     private $conn = null;
 
     public function getConnection() {
