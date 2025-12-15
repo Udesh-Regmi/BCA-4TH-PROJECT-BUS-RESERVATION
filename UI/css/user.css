@@ -437,6 +437,28 @@ button.btn-delete {
 button.btn-action:hover {
     opacity: 0.9;
 }
+.btn-print{
+    width: 90px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #db3517;
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 14px;
+    transition: background 0.3s;
+    
+}
+
+.btn-view:hover {
+    background: #00596b;
+}
+.btn-cancel:hover {
+    background: #8a7b1c;
+}
 
 /* Modal Styles */
 .modal {

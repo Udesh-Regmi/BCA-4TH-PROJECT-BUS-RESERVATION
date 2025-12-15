@@ -53,6 +53,7 @@ include '../../UI/components/Alert.php';
                         <?php foreach ($userReservations as $res): ?>
                             <tr>
                                 <td><?php echo $res['id']; ?></td>
+
                                 <td><?php echo $res['bus_number']; ?></td>
                                 <td><?php echo $res['bus_name']; ?></td>
                                 <td><?php echo $res['route_from'] . ' → ' . $res['route_to']; ?></td>
@@ -83,6 +84,8 @@ include '../../UI/components/Alert.php';
                                                 onclick="return confirm('Delete this reservation?')">Delete</button>
                                         </form>
                                     <?php endif; ?>
+                                   <a class="btn-print" href="<?php echo BASE_URL; ?>/pages/user/print.php?id=<?php echo $res['id']; ?>">Print</a>
+
                                 </td>
 
                             </tr>

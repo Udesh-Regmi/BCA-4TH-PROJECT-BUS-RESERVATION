@@ -24,13 +24,25 @@ class Reservation {
     /**
      * Create new reservation with payment details
      */
-    public function create($busId, $userId, $seatNumber, $bookingDate, $passengerName, $passengerPhone, $totalAmount,$paymentMethod ,$transactionId  ) {
-        $query = "INSERT INTO " . $this->table . " 
-                  (user_id, bus_id, seat_number, booking_date, passenger_name, 
-                   passenger_phone, total_amount, status, payment_method, transaction_id) 
-                  VALUES (:user_id, :bus_id, :seat_number, :booking_date, :passenger_name, 
-                          :passenger_phone, :total_amount, :status, :payment_method, :transaction_id)";
-        
+    public function create($busId, $userId, $seatNumber, $bookingDate, $passengerName, $passengerPhone, $totalAmount, $transactionId = null, $paymentMethod = 'esewa') {
+    error_log("Reservation::create called with params:");
+    error_log("  busId: {$busId}");
+    error_log("  userId: {$userId}");
+    error_log("  seatNumber: {$seatNumber}");
+    error_log("  bookingDate: {$bookingDate}");
+    error_log("  passengerName: {$passengerName}");
+    error_log("  passengerPhone: {$passengerPhone}");
+    error_log("  totalAmount: {$totalAmount}");
+    error_log("  transactionId: {$transactionId}");
+    error_log("  paymentMethod: {$paymentMethod}");
+    
+    $query = "INSERT INTO " . $this->table . " 
+              (user_id, bus_id, seat_number, booking_date, passenger_name, 
+               passenger_phone, total_amount, status, payment_method, transaction_id) 
+              VALUES (:user_id, :bus_id, :seat_number, :booking_date, :passenger_name, 
+                      :passenger_phone, :total_amount, :status, :payment_method, :transaction_id)";
+    
+    try {
         $stmt = $this->conn->prepare($query);
         $status = 'confirmed';
         
@@ -45,17 +57,21 @@ class Reservation {
         $stmt->bindParam(":payment_method", $paymentMethod);
         $stmt->bindParam(":transaction_id", $transactionId);
         
-        try {
-            if ($stmt->execute()) {
-                return $this->conn->lastInsertId();
-            }
-            return false;
-        } catch (PDOException $e) {
-            error_log("Reservation creation error: " . $e->getMessage());
+        if ($stmt->execute()) {
+            $lastId = $this->conn->lastInsertId();
+            error_log("Reservation created successfully with ID: {$lastId}");
+            return $lastId;
+        } else {
+            error_log("Reservation execute() returned false");
+            error_log("Error info: " . print_r($stmt->errorInfo(), true));
             return false;
         }
+    } catch (PDOException $e) {
+        error_log("Reservation creation PDO error: " . $e->getMessage());
+        error_log("SQL State: " . $e->getCode());
+        return false;
     }
-
+}
     /**
      * Create reservation from array data (legacy support)
      */

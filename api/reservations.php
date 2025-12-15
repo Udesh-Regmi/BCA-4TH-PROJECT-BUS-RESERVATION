@@ -54,9 +54,83 @@ switch ($method) {
         }
         break;
         
-    case 'POST':
-        $data = json_decode(file_get_contents('php://input'), true);
+ case 'POST':
+    $data = json_decode(file_get_contents('php://input'), true);
+    
+    // Check if this is a multiple seat reservation
+    $action = $data['action'] ?? '';
+    
+    if ($action === 'create_multiple') {
+        // Handle multiple seat reservation
+        $busId = $data['bus_id'] ?? null;
+        $bookingDate = $data['booking_date'] ?? null;
+        $paymentMethod = $data['payment_method'] ?? 'cash';
+        $transactionId = $data['transaction_id'] ?? null;
+        $totalAmount = $data['amount'] ?? 0;
+        $passengers = $data['seats'] ?? []; // Array of passengers with seat, name, phone
         
+        if (!$busId || !$bookingDate || empty($passengers)) {
+            $response['message'] = 'Missing required fields for multiple reservation';
+            break;
+        }
+        
+        // Extract seat numbers for availability check
+        $seatNumbers = array_column($passengers, 'seat');
+        
+        // Validate seat availability
+        if (!$reservation->areSeatsAvailable($busId, $seatNumbers, $bookingDate)) {
+            $response['message'] = 'One or more seats are already reserved';
+            break;
+        }
+        
+        // Get bus data
+        $busData = $bus->getById($busId);
+        if (!$busData) {
+            $response['message'] = 'Bus not found';
+            break;
+        }
+        
+        // Validate passenger data
+        foreach ($passengers as $index => $passenger) {
+            if (empty($passenger['name']) || empty($passenger['phone']) || empty($passenger['seat'])) {
+                $response['message'] = "Missing information for passenger " . ($index + 1);
+                break 2;
+            }
+        }
+        
+        // Create multiple reservations
+        $createdIds = $reservation->createMultiple(
+            $_SESSION['user_id'],
+            $busId,
+            $bookingDate,
+            $passengers,
+            $totalAmount,
+            $paymentMethod,
+            $transactionId,
+            'pending' // or 'confirmed' based on payment method
+        );
+        
+        if ($createdIds) {
+            // Update available seats count
+            $seatCount = count($passengers);
+            if ($bus->updateSeats($busId, $seatCount)) {
+                $response['success'] = true;
+                $response['message'] = "Successfully reserved {$seatCount} seat(s)";
+                $response['data'] = [
+                    'reservation_ids' => $createdIds,
+                    'seat_count' => $seatCount,
+                    'total_amount' => $totalAmount
+                ];
+            } else {
+                // If seat update fails, cancel the reservations
+                $reservation->cancelMultiple($createdIds);
+                $response['message'] = 'Failed to update bus seat availability';
+            }
+        } else {
+            $response['message'] = 'Failed to create reservations';
+        }
+    } else {
+        // Original single seat reservation logic
         $busId = $data['bus_id'] ?? null;
         $seatNumber = $data['seat_number'] ?? null;
         $bookingDate = $data['booking_date'] ?? null;
@@ -89,7 +163,8 @@ switch ($method) {
         } else {
             $response['message'] = 'Failed to create reservation';
         }
-        break;
+    }
+    break;
         
     case 'PUT':
         $data = json_decode(file_get_contents('php://input'), true);

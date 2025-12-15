@@ -1,0 +1,64 @@
+2025-12-13 17:53:18 - === eSewa Success Callback Started ===
+2025-12-13 17:53:18 - GET params: Array
+(
+    [data] => eyJ0cmFuc2FjdGlvbl9jb2RlIjoiMDAwREFYRSIsInN0YXR1cyI6IkNPTVBMRVRFIiwidG90YWxfYW1vdW50IjoiMTUwMC4wIiwidHJhbnNhY3Rpb25fdXVpZCI6IlRYTjE3NjU2NDQ3MDM0Nzd2NThrYWJ1ZnYiLCJwcm9kdWN0X2NvZGUiOiJFUEFZVEVTVCIsInNpZ25lZF9maWVsZF9uYW1lcyI6InRyYW5zYWN0aW9uX2NvZGUsc3RhdHVzLHRvdGFsX2Ftb3VudCx0cmFuc2FjdGlvbl91dWlkLHByb2R1Y3RfY29kZSxzaWduZWRfZmllbGRfbmFtZXMiLCJzaWduYXR1cmUiOiIvMkdUWGFUcTk0K1V0eEhUZzNKKzBjN0RmRk4rbFR2SGtNOWppSVNFYkpvPSJ9
+)
+
+2025-12-13 17:53:18 - Session ID: j7880qn1hp385460k4g75fhb9h
+2025-12-13 17:53:18 - User ID: 2
+2025-12-13 17:53:18 - Encoded data received: Yes
+2025-12-13 17:53:18 - Decoded payment data: Array
+(
+    [transaction_code] => 000DAXE
+    [status] => COMPLETE
+    [total_amount] => 1500.0
+    [transaction_uuid] => TXN1765644703477v58kabufv
+    [product_code] => EPAYTEST
+    [signed_field_names] => transaction_code,status,total_amount,transaction_uuid,product_code,signed_field_names
+    [signature] => /2GTXaTq94+UtxHTg3J+0c7DfFN+lTvHkM9jiISEbJo=
+)
+
+2025-12-13 17:53:18 - Payment status: COMPLETE
+2025-12-13 17:53:18 - Pending reservation from session: Array
+(
+    [bus_id] => 6
+    [seat_number] => 34
+    [passenger_name] => Udesh Regmi
+    [passenger_phone] => 9838943894
+    [booking_date] => 2025-12-13
+    [amount] => 1500
+    [status] => pending
+    [payment_method] => esewa
+)
+
+2025-12-13 17:53:18 - Transaction UUID from session: TXN1765644703477v58kabufv
+2025-12-13 17:53:18 - Comparing UUIDs - Session: TXN1765644703477v58kabufv, Response: TXN1765644703477v58kabufv
+2025-12-13 17:53:18 - Transaction UUID verified successfully
+2025-12-13 17:53:18 - Seat availability check: Available
+2025-12-13 17:53:18 - Creating reservation with transaction code: 000DAXE
+2025-12-13 17:53:18 - Reservation creation result: Success - ID: 43
+2025-12-13 17:53:18 - Reservation created successfully, redirecting to myreservations
+2025-12-13 17:56:47 - === eSewa Success Callback Started ===
+2025-12-13 17:56:47 - GET params: Array
+(
+    [data] => eyJ0cmFuc2FjdGlvbl9jb2RlIjoiMDAwREFYRSIsInN0YXR1cyI6IkNPTVBMRVRFIiwidG90YWxfYW1vdW50IjoiMTUwMC4wIiwidHJhbnNhY3Rpb25fdXVpZCI6IlRYTjE3NjU2NDQ3MDM0Nzd2NThrYWJ1ZnYiLCJwcm9kdWN0X2NvZGUiOiJFUEFZVEVTVCIsInNpZ25lZF9maWVsZF9uYW1lcyI6InRyYW5zYWN0aW9uX2NvZGUsc3RhdHVzLHRvdGFsX2Ftb3VudCx0cmFuc2FjdGlvbl91dWlkLHByb2R1Y3RfY29kZSxzaWduZWRfZmllbGRfbmFtZXMiLCJzaWduYXR1cmUiOiIvMkdUWGFUcTk0K1V0eEhUZzNKKzBjN0RmRk4rbFR2SGtNOWppSVNFYkpvPSJ9
+)
+
+2025-12-13 17:56:47 - Session ID: j7880qn1hp385460k4g75fhb9h
+2025-12-13 17:56:47 - User ID: 2
+2025-12-13 17:56:47 - Encoded data received: Yes
+2025-12-13 17:56:47 - Decoded payment data: Array
+(
+    [transaction_code] => 000DAXE
+    [status] => COMPLETE
+    [total_amount] => 1500.0
+    [transaction_uuid] => TXN1765644703477v58kabufv
+    [product_code] => EPAYTEST
+    [signed_field_names] => transaction_code,status,total_amount,transaction_uuid,product_code,signed_field_names
+    [signature] => /2GTXaTq94+UtxHTg3J+0c7DfFN+lTvHkM9jiISEbJo=
+)
+
+2025-12-13 17:56:47 - Payment status: COMPLETE
+2025-12-13 17:56:47 - Pending reservation from session: 
+2025-12-13 17:56:47 - Transaction UUID from session: 
+2025-12-13 17:56:47 - ERROR: No pending reservation in session

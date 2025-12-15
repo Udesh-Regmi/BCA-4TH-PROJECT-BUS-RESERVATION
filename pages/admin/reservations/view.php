@@ -130,6 +130,11 @@ include '../../../UI/components/Alert.php';
 
         <div class="actions mt-20">
             <a href="index.php" class="btn-sm btn-secondary">← Back</a>
+            <a href="print.php?id=<?php echo htmlspecialchars($reservation['id']); ?>" 
+class="btn-sm btn-secondary"   target="_blank">
+    Print Ticket
+</a>
+
 
             <?php if ($reservation['status'] !== 'cancelled'): ?>
                 <form method="POST" action="<?php echo BASE_URL; ?>/controllers/ReservationController.php" style="display:inline;">
