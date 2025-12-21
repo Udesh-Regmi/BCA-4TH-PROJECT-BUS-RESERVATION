@@ -58,7 +58,7 @@ include '../../UI/components/Alert.php';
                 <div class="info-row">
                     <span><i class="fas fa-clock"></i> <?php echo formatTime($busData['departure_time']); ?></span>
                     <br>
-                    <span>Rs. <?php echo number_format($busData['price'], 2); ?></span>
+                    <span>Rs. <?php echo number_format($busData['price'], 2); ?> per seat</span>
                 </div>
             </div>
 
@@ -91,12 +91,11 @@ include '../../UI/components/Alert.php';
 
                     <h3 class="svg-title">
                         <i class="fas fa-map-signs"></i>
-                        Choose Your Seat
+                        Choose Your Seats (Multiple Selection Allowed)
                     </h3>
                     <div class="selected-seat-info">
-                        <p class="svg-sub">Selected seat: <strong id="svg-seat-display">None selected</strong></p>
-                        <div class="seat-position-info" id="seat-position-info">Click on an available seat to select
-                        </div>
+                        <p class="svg-sub">Selected seats: <strong id="svg-seat-display">None selected</strong></p>
+                        <div class="seat-position-info" id="seat-position-info">Click seats to select/deselect. You can select multiple seats.</div>
                     </div>
 
                     <div class="svg-wrapper" role="img" aria-label="Interactive bus seat map">
@@ -221,12 +220,10 @@ include '../../UI/components/Alert.php';
                             <ellipse cx="90" cy="<?php echo $rearY; ?>" rx="8" ry="6" fill="#fbbf24" stroke="#78350f" stroke-width="2" />
                             <ellipse cx="410" cy="<?php echo $rearY; ?>" rx="8" ry="6" fill="#fbbf24" stroke="#78350f" stroke-width="2" />
                             <ellipse cx="430" cy="<?php echo $rearY; ?>" rx="8" ry="6" fill="#dc2626" stroke="#7f1d1d" stroke-width="2" />
-                            
-                            
                         </svg>
                     </div>
 
-                    <input type="hidden" id="seat_number" name="seat_number" value="" required>
+                    <input type="hidden" id="seat_numbers" name="seat_numbers" value="" required>
 
                     <div class="svg-legend">
                         <span class="legend-item">
@@ -260,14 +257,8 @@ include '../../UI/components/Alert.php';
 
                 <div class="form-group">
                     <label for="passenger_phone"><i class="fas fa-phone"></i> Contact Number</label>
-<input 
-  type="tel" 
-  id="passenger_phone" 
-  name="passenger_phone" 
-  placeholder="1234567890" 
-  pattern="[0-9]{10,13}" 
-  required
->
+                    <input type="tel" id="passenger_phone" name="passenger_phone" 
+                        placeholder="1234567890" pattern="[0-9]{10,13}" required>
                 </div>
 
                 <div class="form-group">
@@ -293,11 +284,12 @@ include '../../UI/components/Alert.php';
                 </div>
 
                 <div class="total-amount">
-                    <h3>Total Amount: Rs. <?php echo number_format($busData['price'], 2); ?></h3>
+                    <h3>Total Amount: Rs. <span id="total-amount-display"><?php echo number_format($busData['price'], 2); ?></span></h3>
+                    <p class="seat-count-info">Number of seats: <strong id="seat-count">0</strong></p>
                 </div>
 
                 <button type="button" id="submitReservation" class="btn-submit">
-             <span id="submitText">Confirm Reservation</span>
+                    <span id="submitText">Confirm Reservation</span>
                 </button>
             </form>
         </div>
@@ -320,48 +312,58 @@ include '../../UI/components/Alert.php';
 
 <?php include '../../UI/components/Footer.php'; ?>
 
-<style>
-
-</style>
-
 <script>
 (function () {
     const svg = document.getElementById('bus-svg');
     const seatElems = svg.querySelectorAll('.seat--available');
-    const seatInput = document.getElementById('seat_number');
+    const seatInput = document.getElementById('seat_numbers');
     const seatDisplay = document.getElementById('svg-seat-display');
+    const seatCountDisplay = document.getElementById('seat-count');
+    const totalAmountDisplay = document.getElementById('total-amount-display');
     const submitButton = document.getElementById('submitReservation');
     const submitText = document.getElementById('submitText');
     const paymentMethodInputs = document.querySelectorAll('input[name="payment_method"]');
-    let current = null;
+    
+    const pricePerSeat = <?php echo $busData['price']; ?>;
+    const selectedSeats = new Set();
 
-    function markSelected(gEl) {
-        if (current) {
-            current.querySelector('.seat-rect').classList.remove('selected');
-            current.setAttribute('aria-pressed', 'false');
-        }
-        if (gEl) {
-            gEl.querySelector('.seat-rect').classList.add('selected');
-            gEl.setAttribute('aria-pressed', 'true');
-            current = gEl;
+    function updateDisplay() {
+        if (selectedSeats.size === 0) {
+            seatDisplay.textContent = 'None selected';
+            seatCountDisplay.textContent = '0';
+            totalAmountDisplay.textContent = pricePerSeat.toFixed(2);
         } else {
-            current = null;
+            const sortedSeats = Array.from(selectedSeats).sort((a, b) => a - b);
+            seatDisplay.textContent = sortedSeats.join(', ');
+            seatCountDisplay.textContent = selectedSeats.size;
+            totalAmountDisplay.textContent = (pricePerSeat * selectedSeats.size).toFixed(2);
         }
+        seatInput.value = Array.from(selectedSeats).join(',');
+    }
+
+    function toggleSeat(gEl) {
+        const seat = parseInt(gEl.dataset.seat);
+        const rect = gEl.querySelector('.seat-rect');
+        
+        if (selectedSeats.has(seat)) {
+            selectedSeats.delete(seat);
+            rect.classList.remove('selected');
+            gEl.setAttribute('aria-pressed', 'false');
+        } else {
+            selectedSeats.add(seat);
+            rect.classList.add('selected');
+            gEl.setAttribute('aria-pressed', 'true');
+        }
+        
+        updateDisplay();
     }
 
     seatElems.forEach(el => {
-        el.addEventListener('click', () => {
-            const seat = el.dataset.seat;
-            const position = el.dataset.position;
-            seatInput.value = seat;
-            seatDisplay.textContent = `Seat ${seat} (${position})`;
-            markSelected(el);
-        });
-
+        el.addEventListener('click', () => toggleSeat(el));
         el.addEventListener('keydown', (ev) => {
             if (ev.key === 'Enter' || ev.key === ' ') {
                 ev.preventDefault();
-                el.click();
+                toggleSeat(el);
             }
         });
     });
@@ -377,15 +379,14 @@ include '../../UI/components/Alert.php';
     });
 
     submitButton.addEventListener('click', function() {
-        const seatNum = seatInput.value;
+        const seatNumbers = seatInput.value;
         const passengerName = document.getElementById('passenger_name').value;
         const passengerPhone = document.getElementById('passenger_phone').value;
         const bookingDate = document.getElementById('booking_date').value;
         const paymentMethod = document.querySelector('input[name="payment_method"]:checked').value;
 
-        if (!seatNum) {
-            alert('Please select a seat before proceeding.');
-
+        if (!seatNumbers || selectedSeats.size === 0) {
+            alert('Please select at least one seat before proceeding.');
             return;
         }
 
@@ -394,23 +395,23 @@ include '../../UI/components/Alert.php';
             return;
         }
 
+        const totalAmount = pricePerSeat * selectedSeats.size;
         const reservationData = {
             bus_id: <?php echo $busId; ?>,
-            seat_number: seatNum,
+            seat_numbers: seatNumbers,
             passenger_name: passengerName,
             passenger_phone: passengerPhone,
             booking_date: bookingDate,
-            amount: <?php echo $busData['price']; ?>,
+            amount: totalAmount,
             status: 'pending',
             payment_method: paymentMethod,
         };
 
         if (paymentMethod === 'esewa') {
             const transactionUuid = 'TXN' + Date.now() + Math.random().toString(36).substr(2, 9);
-            const amount = <?php echo $busData['price']; ?>;
 
-            document.getElementById('esewa_amount').value = amount;
-            document.getElementById('esewa_total_amount').value = amount;
+            document.getElementById('esewa_amount').value = totalAmount;
+            document.getElementById('esewa_total_amount').value = totalAmount;
             document.getElementById('esewa_transaction_uuid').value = transactionUuid;
 
             fetch('<?php echo BASE_URL; ?>/controllers/EsewaController.php', {
@@ -420,7 +421,7 @@ include '../../UI/components/Alert.php';
                 },
                 body: JSON.stringify({
                     action: 'generate_signature',
-                    total_amount: amount,
+                    total_amount: totalAmount,
                     status: 'confirmed',
                     transaction_uuid: transactionUuid,
                     reservation_data: reservationData
@@ -440,14 +441,13 @@ include '../../UI/components/Alert.php';
                 alert('Error initiating payment. Please try again.');
             });
         } else {
-            // Cash payment - direct submission
             fetch('<?php echo BASE_URL; ?>/controllers/ReservationController.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    action: 'create',
+                    action: 'create_multiple',
                     ...reservationData,
                     transaction_id: 'CASH' + Date.now()
                 })

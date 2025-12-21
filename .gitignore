@@ -1,1 +1,11 @@
 .sql
+config/
+logs/
+*.env
+.DS_Store
+node_modules/
+dist/
+.idea/
+.vscode/
+*.log   
+*.tmp

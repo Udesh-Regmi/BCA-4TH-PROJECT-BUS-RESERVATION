@@ -1,3 +1,4 @@
+
 # **Bus Reservation System | BCA 4th Semester Project (TU)**
 
 A comprehensive bus reservation platform built with **native PHP, MySQL, HTML, CSS, and JavaScript** following modular architecture without frameworks. Features role-based access (Admin/User), seat selection, and payment integration.
@@ -45,24 +46,45 @@ A comprehensive bus reservation platform built with **native PHP, MySQL, HTML, C
 
 ---
 
-## 📸 **Screenshots**
 
-### **Public Pages**
-| Home Page | Login | Registration |
-|-----------|-------|--------------|
-| ![Home](UI/screenshots/home.png) | ![Login](UI/screenshots/login.png) | ![Register](UI/screenshots/register.png) |
 
-### **User Dashboard**
-| Dashboard | Profile | Seat Selection |
-|-----------|---------|----------------|
-| ![Dashboard](UI/screenshots/userdashboard.png) | ![Profile](UI/screenshots/userprofile.png) | ![Seat Selection](UI/screenshots/bookbus.png) |
 
-### **Admin Panel**
-| Admin Dashboard | Manage Buses | View Reservations |
-|-----------------|-------------|-------------------|
-| ![Admin Dashboard](UI/screenshots/admin-dashboard.png) | ![Manage Buses](UI/screenshots/manage-bus.png) | ![Add Bus](UI/screenshots/add-bus.png) |
+
+## 📸 Screenshots
+
+### 🌐 Public Pages
+
+| Home                             | Login                              | Register                                 | About                              | Contact                                    |
+| -------------------------------- | ---------------------------------- | ---------------------------------------- | ---------------------------------- | ------------------------------------------ |
+| ![Home](UI/screenshots/home.png) | ![Login](UI/screenshots/login.png) | ![Register](UI/screenshots/register.png) | ![About](UI/screenshots/about.png) | ![Contact](UI/screenshots/contact-map.png) |
 
 ---
+
+### 👤 User Dashboard
+
+| Dashboard                                      | View Buses                                | Seat Selection                                |
+| ---------------------------------------------- | ----------------------------------------- | --------------------------------------------- |
+| ![Dashboard](UI/screenshots/userdashboard.png) | ![View Buses](UI/screenshots/viewbus.png) | ![Seat Selection](UI/screenshots/bookbus.png) |
+
+| Seat Layout (Alt View)                      | Reservations                                               | Print Ticket                                               |
+| ------------------------------------------- | ---------------------------------------------------------- | ---------------------------------------------------------- |
+| ![Seat Layout](UI/screenshots/bookbus2.png) | ![User Reservations](UI/screenshots/user-reservations.png) | ![User Print Ticket](UI/screenshots/user-print-ticket.png) |
+
+---
+
+### 🛠️ Admin Panel
+
+| Admin Dashboard                                        | Manage Buses                                   | Add Bus                                |
+| ------------------------------------------------------ | ---------------------------------------------- | -------------------------------------- |
+| ![Admin Dashboard](UI/screenshots/admin-dashboard.png) | ![Manage Buses](UI/screenshots/manage-bus.png) | ![Add Bus](UI/screenshots/add-bus.png) |
+
+| Edit Bus                                | Manage Reservations                                            | Admin Print Ticket                                           |
+| --------------------------------------- | -------------------------------------------------------------- | ------------------------------------------------------------ |
+| ![Edit Bus](UI/screenshots/editbus.png) | ![Manage Reservations](UI/screenshots/manage-reservations.png) | ![Admin Print Ticket](UI/screenshots/admin-print-ticket.png) |
+
+---
+
+
 
 ## 🚀 **Installation & Setup**
 
@@ -394,12 +416,6 @@ ini_set('display_errors', 1);
 4. Push to branch (`git push origin feature/AmazingFeature`)
 5. Open Pull Request
 
-### **Code Standards**
-- Follow PSR-12 coding standards
-- Add comments for complex logic
-- Update documentation accordingly
-- Test before submitting
-
 ---
 
 ## 📄 **License**
@@ -422,6 +438,7 @@ This project is created for educational purposes as part of BCA 4th Semester (Tr
 
 For queries related to this project:
 - **Email**: [udesh.regmi.mail@gmail.com]
+- **LinkedIn** [https://www.linkedin.com/in/udesh-regmi/]
 - **GitHub Issues**: [Create Issue](https://github.com/Udesh-Regmi/BCA-4TH-PROJECT-BUS-RESERVATION/issues)
 - **University**: Department of Humanities and Social Science, TU
 
@@ -435,4 +452,3 @@ For queries related to this project:
 - Project supervisor for guidance
 
 ---
-

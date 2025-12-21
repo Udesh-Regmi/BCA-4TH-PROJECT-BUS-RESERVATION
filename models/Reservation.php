@@ -21,60 +21,102 @@ class Reservation {
         $this->conn = $db;
     }
 
-    /**
-     * Create new reservation with payment details
-     */
     public function create($busId, $userId, $seatNumber, $bookingDate, $passengerName, $passengerPhone, $totalAmount, $transactionId = null, $paymentMethod = 'esewa') {
-    error_log("Reservation::create called with params:");
-    error_log("  busId: {$busId}");
-    error_log("  userId: {$userId}");
-    error_log("  seatNumber: {$seatNumber}");
-    error_log("  bookingDate: {$bookingDate}");
-    error_log("  passengerName: {$passengerName}");
-    error_log("  passengerPhone: {$passengerPhone}");
-    error_log("  totalAmount: {$totalAmount}");
-    error_log("  transactionId: {$transactionId}");
-    error_log("  paymentMethod: {$paymentMethod}");
-    
-    $query = "INSERT INTO " . $this->table . " 
-              (user_id, bus_id, seat_number, booking_date, passenger_name, 
-               passenger_phone, total_amount, status, payment_method, transaction_id) 
-              VALUES (:user_id, :bus_id, :seat_number, :booking_date, :passenger_name, 
-                      :passenger_phone, :total_amount, :status, :payment_method, :transaction_id)";
-    
-    try {
-        $stmt = $this->conn->prepare($query);
-        $status = 'confirmed';
+        error_log("Reservation::create called with params:");
+        error_log("  busId: {$busId}");
+        error_log("  userId: {$userId}");
+        error_log("  seatNumber: {$seatNumber}");
+        error_log("  bookingDate: {$bookingDate}");
+        error_log("  passengerName: {$passengerName}");
+        error_log("  passengerPhone: {$passengerPhone}");
+        error_log("  totalAmount: {$totalAmount}");
+        error_log("  transactionId: {$transactionId}");
+        error_log("  paymentMethod: {$paymentMethod}");
         
-        $stmt->bindParam(":user_id", $userId);
-        $stmt->bindParam(":bus_id", $busId);
-        $stmt->bindParam(":seat_number", $seatNumber);
-        $stmt->bindParam(":booking_date", $bookingDate);
-        $stmt->bindParam(":passenger_name", $passengerName);
-        $stmt->bindParam(":passenger_phone", $passengerPhone);
-        $stmt->bindParam(":total_amount", $totalAmount);
-        $stmt->bindParam(":status", $status);
-        $stmt->bindParam(":payment_method", $paymentMethod);
-        $stmt->bindParam(":transaction_id", $transactionId);
+        $query = "INSERT INTO " . $this->table . " 
+                  (user_id, bus_id, seat_number, booking_date, passenger_name, 
+                   passenger_phone, total_amount, status, payment_method, transaction_id) 
+                  VALUES (:user_id, :bus_id, :seat_number, :booking_date, :passenger_name, 
+                          :passenger_phone, :total_amount, :status, :payment_method, :transaction_id)";
         
-        if ($stmt->execute()) {
-            $lastId = $this->conn->lastInsertId();
-            error_log("Reservation created successfully with ID: {$lastId}");
-            return $lastId;
-        } else {
-            error_log("Reservation execute() returned false");
-            error_log("Error info: " . print_r($stmt->errorInfo(), true));
+        try {
+            $stmt = $this->conn->prepare($query);
+            $status = 'confirmed';
+            
+            $stmt->bindParam(":user_id", $userId);
+            $stmt->bindParam(":bus_id", $busId);
+            $stmt->bindParam(":seat_number", $seatNumber);
+            $stmt->bindParam(":booking_date", $bookingDate);
+            $stmt->bindParam(":passenger_name", $passengerName);
+            $stmt->bindParam(":passenger_phone", $passengerPhone);
+            $stmt->bindParam(":total_amount", $totalAmount);
+            $stmt->bindParam(":status", $status);
+            $stmt->bindParam(":payment_method", $paymentMethod);
+            $stmt->bindParam(":transaction_id", $transactionId);
+            
+            if ($stmt->execute()) {
+                $lastId = $this->conn->lastInsertId();
+                error_log("Reservation created successfully with ID: {$lastId}");
+                return $lastId;
+            } else {
+                error_log("Reservation execute() returned false");
+                error_log("Error info: " . print_r($stmt->errorInfo(), true));
+                return false;
+            }
+        } catch (PDOException $e) {
+            error_log("Reservation creation PDO error: " . $e->getMessage());
+            error_log("SQL State: " . $e->getCode());
             return false;
         }
-    } catch (PDOException $e) {
-        error_log("Reservation creation PDO error: " . $e->getMessage());
-        error_log("SQL State: " . $e->getCode());
-        return false;
     }
-}
-    /**
-     * Create reservation from array data (legacy support)
-     */
+
+    public function createMultiple($busId, $userId, $seatNumbers, $bookingDate, $passengerName, $passengerPhone, $pricePerSeat, $transactionId = null, $paymentMethod = 'cash') {
+        error_log("Reservation::createMultiple called");
+        error_log("  Seats: " . implode(',', $seatNumbers));
+        
+        try {
+            $this->conn->beginTransaction();
+            
+            $createdIds = [];
+            foreach ($seatNumbers as $seatNumber) {
+                $query = "INSERT INTO " . $this->table . " 
+                          (user_id, bus_id, seat_number, booking_date, passenger_name, 
+                           passenger_phone, total_amount, status, payment_method, transaction_id) 
+                          VALUES (:user_id, :bus_id, :seat_number, :booking_date, :passenger_name, 
+                                  :passenger_phone, :total_amount, :status, :payment_method, :transaction_id)";
+                
+                $stmt = $this->conn->prepare($query);
+                $status = 'confirmed';
+                
+                $stmt->bindParam(":user_id", $userId);
+                $stmt->bindParam(":bus_id", $busId);
+                $stmt->bindParam(":seat_number", $seatNumber);
+                $stmt->bindParam(":booking_date", $bookingDate);
+                $stmt->bindParam(":passenger_name", $passengerName);
+                $stmt->bindParam(":passenger_phone", $passengerPhone);
+                $stmt->bindParam(":total_amount", $pricePerSeat);
+                $stmt->bindParam(":status", $status);
+                $stmt->bindParam(":payment_method", $paymentMethod);
+                $stmt->bindParam(":transaction_id", $transactionId);
+                
+                if (!$stmt->execute()) {
+                    throw new Exception("Failed to insert seat {$seatNumber}");
+                }
+                
+                $createdIds[] = $this->conn->lastInsertId();
+            }
+            
+            $this->conn->commit();
+            error_log("Multiple reservations created successfully: " . implode(',', $createdIds));
+            return $createdIds;
+            
+        } catch (Exception $e) {
+            $this->conn->rollBack();
+            error_log("Multiple reservation creation error: " . $e->getMessage());
+            return false;
+        }
+    }
+
     public function createFromArray($data) {
         $query = "INSERT INTO " . $this->table . " 
                   (user_id, bus_id, seat_number, booking_date, passenger_name, 
@@ -106,9 +148,6 @@ class Reservation {
         }
     }
 
-    /**
-     * Get all reservations with user and bus details
-     */
     public function getAll() {
         $query = "SELECT r.*, 
                          u.name as user_name, u.email, 
@@ -124,9 +163,6 @@ class Reservation {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    /**
-     * Get reservations by user ID
-     */
     public function getByUserId($userId) {
         $query = "SELECT r.*, 
                          b.bus_name, b.bus_number, b.route_from, b.route_to, 
@@ -143,9 +179,6 @@ class Reservation {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    /**
-     * Get reservation by ID with full details
-     */
     public function getById($id) {
         $query = "SELECT r.*, 
                          u.name as user_name, u.email, u.phone as user_phone, 
@@ -164,9 +197,6 @@ class Reservation {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    /**
-     * Get reservation by transaction ID
-     */
     public function getByTransactionId($transactionId) {
         $query = "SELECT r.*, 
                          u.name as user_name, u.email, 
@@ -184,9 +214,23 @@ class Reservation {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    /**
-     * Update reservation status
-     */
+    public function getAllByTransactionId($transactionId) {
+        $query = "SELECT r.*, 
+                         u.name as user_name, u.email, 
+                         b.bus_name, b.bus_number, b.route_from, b.route_to 
+                  FROM " . $this->table . " r
+                  INNER JOIN users u ON r.user_id = u.id
+                  INNER JOIN buses b ON r.bus_id = b.id
+                  WHERE r.transaction_id = :transaction_id 
+                  ORDER BY r.seat_number ASC";
+        
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(":transaction_id", $transactionId);
+        $stmt->execute();
+        
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function updateStatus($id, $status) {
         $query = "UPDATE " . $this->table . " 
                   SET status = :status, updated_at = CURRENT_TIMESTAMP 
@@ -204,9 +248,23 @@ class Reservation {
         }
     }
 
-    /**
-     * Update payment details
-     */
+    public function updateStatusByTransactionId($transactionId, $status) {
+        $query = "UPDATE " . $this->table . " 
+                  SET status = :status, updated_at = CURRENT_TIMESTAMP 
+                  WHERE transaction_id = :transaction_id";
+        
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(":status", $status);
+        $stmt->bindParam(":transaction_id", $transactionId);
+        
+        try {
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            error_log("Reservation status update error: " . $e->getMessage());
+            return false;
+        }
+    }
+
     public function updatePaymentDetails($id, $transactionId, $paymentMethod = 'esewa') {
         $query = "UPDATE " . $this->table . " 
                   SET transaction_id = :transaction_id, 
@@ -227,9 +285,6 @@ class Reservation {
         }
     }
 
-    /**
-     * Delete reservation
-     */
     public function delete($id) {
         $query = "DELETE FROM " . $this->table . " WHERE id = :id";
         
@@ -244,9 +299,6 @@ class Reservation {
         }
     }
 
-    /**
-     * Get reserved seats for a specific bus and date
-     */
     public function getReservedSeats($busId, $date) {
         $query = "SELECT seat_number 
                   FROM " . $this->table . " 
@@ -262,9 +314,6 @@ class Reservation {
         return $stmt->fetchAll(PDO::FETCH_COLUMN);
     }
 
-    /**
-     * Check if seat is available
-     */
     public function isSeatAvailable($busId, $seatNumber, $date) {
         $query = "SELECT COUNT(*) as count 
                   FROM " . $this->table . " 
@@ -283,9 +332,18 @@ class Reservation {
         return $row['count'] == 0;
     }
 
-    /**
-     * Get reservations by status
-     */
+    public function areSeatsAvailable($busId, $seatNumbers, $date) {
+        $reservedSeats = $this->getReservedSeats($busId, $date);
+        
+        foreach ($seatNumbers as $seat) {
+            if (in_array($seat, $reservedSeats)) {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+
     public function getByStatus($status) {
         $query = "SELECT r.*, 
                          u.name as user_name, u.email, 
@@ -303,9 +361,6 @@ class Reservation {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    /**
-     * Get reservations by bus ID
-     */
     public function getByBusId($busId) {
         $query = "SELECT r.*, 
                          u.name as user_name, u.email 
@@ -321,9 +376,6 @@ class Reservation {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    /**
-     * Get total reservation count
-     */
     public function getTotalCount() {
         $query = "SELECT COUNT(*) as total FROM " . $this->table;
         
@@ -334,9 +386,6 @@ class Reservation {
         return $row['total'];
     }
 
-    /**
-     * Get reservation count by status
-     */
     public function getCountByStatus($status) {
         $query = "SELECT COUNT(*) as total FROM " . $this->table . " WHERE status = :status";
         
@@ -348,9 +397,6 @@ class Reservation {
         return $row['total'];
     }
 
-    /**
-     * Get total revenue
-     */
     public function getTotalRevenue() {
         $query = "SELECT SUM(total_amount) as revenue 
                   FROM " . $this->table . " 
@@ -363,9 +409,6 @@ class Reservation {
         return $row['revenue'] ?? 0;
     }
 
-    /**
-     * Get recent reservations
-     */
     public function getRecent($limit = 5) {
         $query = "SELECT r.*, 
                          u.name as user_name, 

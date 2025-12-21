@@ -1,52 +1,69 @@
 <?php
-require_once '../config/database.php';
-require_once '../config/constants.php';
-require_once '../includes/session.php';
-
-// Enable error logging
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
+require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../config/constants.php';
+require_once __DIR__ . '/../includes/session.php';
 
 header('Content-Type: application/json');
 
-$input = json_decode(file_get_contents('php://input'), true);
-
-error_log("EsewaController - Input: " . print_r($input, true));
-
-if (!isset($input['action'])) {
-    echo json_encode(['error' => 'No action specified']);
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    echo json_encode(['success' => false, 'message' => 'Invalid request method']);
     exit();
 }
 
-if ($input['action'] === 'generate_signature') {
+$input = json_decode(file_get_contents('php://input'), true);
+$action = $input['action'] ?? '';
+
+if ($action === 'generate_signature') {
     $totalAmount = $input['total_amount'] ?? 0;
     $transactionUuid = $input['transaction_uuid'] ?? '';
     $productCode = 'EPAYTEST';
     
-    if (empty($totalAmount) || empty($transactionUuid)) {
-        echo json_encode(['error' => 'Missing required parameters']);
-        exit();
-    }
+    // eSewa secret key (get from environment or config in production)
+    $secretKey = '8gBm/:&EnhH.1/q';
     
-    // Store reservation data in session using helper functions
-    setPendingReservation($input['reservation_data']);
-    setTransactionUuid($transactionUuid);
-    
-    error_log("Stored in session - Reservation: " . print_r($input['reservation_data'], true));
-    error_log("Stored in session - UUID: " . $transactionUuid);
-    
-    // Generate signature using HMAC SHA256
-    $secret = '8gBm/:&EnhH.1/q'; // eSewa test secret key
+    // Generate signature
     $message = "total_amount={$totalAmount},transaction_uuid={$transactionUuid},product_code={$productCode}";
-    $signature = base64_encode(hash_hmac('sha256', $message, $secret, true));
+    $signature = base64_encode(hash_hmac('sha256', $message, $secretKey, true));
     
-    error_log("Generated signature: " . $signature);
+    // Store reservation data in session
+    if (isset($input['reservation_data'])) {
+        $reservationData = $input['reservation_data'];
+        
+        // Handle both single and multiple seats
+        if (isset($reservationData['seat_numbers'])) {
+            // Multiple seats
+            setPendingReservation([
+                'bus_id' => $reservationData['bus_id'],
+                'seat_numbers' => $reservationData['seat_numbers'],
+                'booking_date' => $reservationData['booking_date'],
+                'passenger_name' => $reservationData['passenger_name'],
+                'passenger_phone' => $reservationData['passenger_phone'],
+                'amount' => $reservationData['amount'],
+                'payment_method' => 'esewa'
+            ]);
+        } else {
+            // Single seat (legacy)
+            setPendingReservation([
+                'bus_id' => $reservationData['bus_id'],
+                'seat_number' => $reservationData['seat_number'],
+                'booking_date' => $reservationData['booking_date'],
+                'passenger_name' => $reservationData['passenger_name'],
+                'passenger_phone' => $reservationData['passenger_phone'],
+                'amount' => $reservationData['amount'],
+                'payment_method' => 'esewa'
+            ]);
+        }
+        
+        setTransactionUuid($transactionUuid);
+    }
     
     echo json_encode([
         'success' => true,
         'signature' => $signature,
-        'transaction_uuid' => $transactionUuid
+        'message' => $message
     ]);
-} else {
-    echo json_encode(['error' => 'Invalid action']);
+    exit();
 }
+
+echo json_encode(['success' => false, 'message' => 'Invalid action']);
+?>

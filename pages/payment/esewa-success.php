@@ -3,8 +3,8 @@ require_once '../../config/database.php';
 require_once '../../config/constants.php';
 require_once '../../includes/session.php';
 require_once '../../models/Reservation.php';
+require_once '../../models/Bus.php';
 
-// Create log file for debugging
 $logFile = __DIR__ . '/../../logs/esewa-success.log';
 if (!is_dir(__DIR__ . '/../../logs')) {
     mkdir(__DIR__ . '/../../logs', 0777, true);
@@ -22,7 +22,6 @@ logDebug("User ID: " . getUserId());
 
 $pageTitle = "Payment Processing - " . SITE_NAME;
 
-// Get eSewa response
 $data = $_GET['data'] ?? '';
 logDebug("Encoded data received: " . ($data ? 'Yes' : 'No'));
 
@@ -43,7 +42,6 @@ if (!$decodedData) {
     exit();
 }
 
-// Check payment status
 if (!isset($decodedData['status']) || $decodedData['status'] !== 'COMPLETE') {
     logDebug("ERROR: Payment not completed. Status: " . ($decodedData['status'] ?? 'not set'));
     setAlert('Payment was not completed. Please try again.', 'danger');
@@ -53,12 +51,11 @@ if (!isset($decodedData['status']) || $decodedData['status'] !== 'COMPLETE') {
 
 logDebug("Payment status: COMPLETE");
 
-// Initialize database
 $database = new Database();
 $db = $database->getConnection();
 $reservation = new Reservation($db);
+$bus = new Bus($db);
 
-// Get pending reservation from session
 $pendingReservation = getPendingReservation();
 $transactionUuid = getTransactionUuid();
 
@@ -72,7 +69,6 @@ if (!$pendingReservation) {
     exit();
 }
 
-// Verify transaction UUID matches
 $responseUuid = $decodedData['transaction_uuid'] ?? '';
 logDebug("Comparing UUIDs - Session: {$transactionUuid}, Response: {$responseUuid}");
 
@@ -85,60 +81,123 @@ if ($transactionUuid !== $responseUuid) {
 
 logDebug("Transaction UUID verified successfully");
 
-// Check if seat is still available
-$isAvailable = $reservation->isSeatAvailable(
-    $pendingReservation['bus_id'],
-    $pendingReservation['seat_number'],
-    $pendingReservation['booking_date']
-);
-
-logDebug("Seat availability check: " . ($isAvailable ? 'Available' : 'Not available'));
-
-if (!$isAvailable) {
-    clearPendingReservation();
-    logDebug("ERROR: Seat no longer available");
-    setAlert('Sorry, this seat was just booked. Your payment will be refunded.', 'warning');
-    redirect(BASE_URL . '/pages/public/viewbus.php');
-    exit();
-}
-
-// Create reservation
 $transactionCode = $decodedData['transaction_code'] ?? $responseUuid;
-logDebug("Creating reservation with transaction code: " . $transactionCode);
+logDebug("Transaction code: " . $transactionCode);
 
-try {
-    $reservationId = $reservation->create(
-        $pendingReservation['bus_id'],
-        getUserId(),
-        $pendingReservation['seat_number'],
-        $pendingReservation['booking_date'],
-        $pendingReservation['passenger_name'],
-        $pendingReservation['passenger_phone'],
-        $pendingReservation['amount'],
-        $transactionCode,
-        'esewa'
-    );
+// Handle multiple seats
+if (isset($pendingReservation['seat_numbers'])) {
+    $seatNumbers = is_array($pendingReservation['seat_numbers']) 
+        ? $pendingReservation['seat_numbers'] 
+        : array_map('intval', explode(',', $pendingReservation['seat_numbers']));
     
-    logDebug("Reservation creation result: " . ($reservationId ? "Success - ID: {$reservationId}" : "Failed"));
+    logDebug("Multiple seats reservation: " . implode(',', $seatNumbers));
     
-    if ($reservationId) {
+    // Check if all seats are still available
+    if (!$reservation->areSeatsAvailable($pendingReservation['bus_id'], $seatNumbers, $pendingReservation['booking_date'])) {
         clearPendingReservation();
-        logDebug("Reservation created successfully, redirecting to myreservations");
-        setAlert('Payment successful! Your reservation is confirmed. Booking ID: ' . $reservationId, 'success');
-        redirect(BASE_URL . '/pages/user/reservations.php');
-        exit();
-    } else {
-        logDebug("ERROR: Reservation creation returned false/0");
-        setAlert('Payment received but reservation failed. Contact support with transaction: ' . $transactionCode, 'danger');
+        logDebug("ERROR: One or more seats no longer available");
+        setAlert('Sorry, one or more seats were just booked. Your payment will be refunded.', 'warning');
         redirect(BASE_URL . '/pages/public/viewbus.php');
         exit();
     }
-
-
-} catch (Exception $e) {
-    logDebug("EXCEPTION during reservation creation: " . $e->getMessage());
-    logDebug("Stack trace: " . $e->getTraceAsString());
-    setAlert('An error occurred. Please contact support with transaction: ' . $transactionCode, 'danger');
-    redirect(BASE_URL . '/pages/public/viewbus.php');
-    exit();
+    
+    // Get bus price
+    $busData = $bus->getById($pendingReservation['bus_id']);
+    if (!$busData) {
+        logDebug("ERROR: Bus not found");
+        setAlert('Bus information not found. Contact support with transaction: ' . $transactionCode, 'danger');
+        redirect(BASE_URL . '/pages/public/viewbus.php');
+        exit();
+    }
+    
+    try {
+        $reservationIds = $reservation->createMultiple(
+            $pendingReservation['bus_id'],
+            getUserId(),
+            $seatNumbers,
+            $pendingReservation['booking_date'],
+            $pendingReservation['passenger_name'],
+            $pendingReservation['passenger_phone'],
+            $busData['price'],
+            $transactionCode,
+            'esewa'
+        );
+        
+        logDebug("Multiple reservations result: " . print_r($reservationIds, true));
+        
+        if ($reservationIds && is_array($reservationIds)) {
+            $bus->updateSeats($pendingReservation['bus_id'], count($seatNumbers));
+            clearPendingReservation();
+            logDebug("Multiple reservations created successfully");
+            setAlert('Payment successful! Your ' . count($seatNumbers) . ' seat(s) are confirmed.', 'success');
+            redirect(BASE_URL . '/pages/user/reservations.php');
+            exit();
+        } else {
+            logDebug("ERROR: Multiple reservation creation failed");
+            setAlert('Payment received but reservation failed. Contact support with transaction: ' . $transactionCode, 'danger');
+            redirect(BASE_URL . '/pages/public/viewbus.php');
+            exit();
+        }
+    } catch (Exception $e) {
+        logDebug("EXCEPTION during multiple reservation creation: " . $e->getMessage());
+        logDebug("Stack trace: " . $e->getTraceAsString());
+        setAlert('An error occurred. Please contact support with transaction: ' . $transactionCode, 'danger');
+        redirect(BASE_URL . '/pages/public/viewbus.php');
+        exit();
+    }
+    
+} else {
+    // Single seat (legacy support)
+    $isAvailable = $reservation->isSeatAvailable(
+        $pendingReservation['bus_id'],
+        $pendingReservation['seat_number'],
+        $pendingReservation['booking_date']
+    );
+    
+    logDebug("Single seat availability check: " . ($isAvailable ? 'Available' : 'Not available'));
+    
+    if (!$isAvailable) {
+        clearPendingReservation();
+        logDebug("ERROR: Seat no longer available");
+        setAlert('Sorry, this seat was just booked. Your payment will be refunded.', 'warning');
+        redirect(BASE_URL . '/pages/public/viewbus.php');
+        exit();
+    }
+    
+    try {
+        $reservationId = $reservation->create(
+            $pendingReservation['bus_id'],
+            getUserId(),
+            $pendingReservation['seat_number'],
+            $pendingReservation['booking_date'],
+            $pendingReservation['passenger_name'],
+            $pendingReservation['passenger_phone'],
+            $pendingReservation['amount'],
+            $transactionCode,
+            'esewa'
+        );
+        
+        logDebug("Single reservation result: " . ($reservationId ? "Success - ID: {$reservationId}" : "Failed"));
+        
+        if ($reservationId) {
+            $bus->updateSeats($pendingReservation['bus_id'], 1);
+            clearPendingReservation();
+            logDebug("Single reservation created successfully");
+            setAlert('Payment successful! Your reservation is confirmed. Booking ID: ' . $reservationId, 'success');
+            redirect(BASE_URL . '/pages/user/reservations.php');
+            exit();
+        } else {
+            logDebug("ERROR: Single reservation creation failed");
+            setAlert('Payment received but reservation failed. Contact support with transaction: ' . $transactionCode, 'danger');
+            redirect(BASE_URL . '/pages/public/viewbus.php');
+            exit();
+        }
+    } catch (Exception $e) {
+        logDebug("EXCEPTION during single reservation creation: " . $e->getMessage());
+        logDebug("Stack trace: " . $e->getTraceAsString());
+        setAlert('An error occurred. Please contact support with transaction: ' . $transactionCode, 'danger');
+        redirect(BASE_URL . '/pages/public/viewbus.php');
+        exit();
+    }
 }
+?>

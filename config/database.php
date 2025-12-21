@@ -2,9 +2,9 @@
 
 <?php
 class Database {
-    private $host = "localhost";
-    private $db_name = "bus_reservation";
-    private $username = "root";        // Your MySQL username
+    private $host = "";
+    private $db_name = "";
+    private $username = "";        // Your MySQL username
     private $password = "";  
     private $conn = null;
 
