@@ -111,16 +111,16 @@ include '../../UI/components/Navbar.php';
         <div class="testimonial-container">
 
             <div class="testimonial-card">
-                <img src="https://t3.ftcdn.net/jpg/17/66/94/28/240_F_1766942879_e7DJKxitE3vUGBdn93OYhnXsCkLU3xm0.jpg"
-                    alt="Aarav Sharma">
+                <img src="https://scontent-lga3-2.xx.fbcdn.net/v/t39.30808-6/472208567_122201224238217651_4548090059175145620_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=833d8c&_nc_ohc=iBqVwqCjYLUQ7kNvwF-kdou&_nc_oc=Adl1Ug7nCqjuPI6RU3bqquwjvy8sx4L3uvm5uK3ol1KpfGhy1PlX4Gh51b4StQLVJKw&_nc_zt=23&_nc_ht=scontent-lga3-2.xx&_nc_gid=iNl5XGo-KR5tuWejTnWKWA&oh=00_Afns7YbLomGwI59mY5VL3FCzGuOP46jwg-1wTAoiaF9nPA&oe=694DF01C"
+                    alt="Sital Dangaura">
                 <p class="testimonial-text">
                     "The seats were super comfortable and the booking system was so easy to use!"
                 </p>
-                <h4 class="testimonial-author">Aarav Sharma</h4>
+                <h4 class="testimonial-author">Sital Dangaura</h4>
             </div>
 
             <div class="testimonial-card">
-                <img src="https://scontent-lga3-3.xx.fbcdn.net/v/t39.30808-1/465049957_1069942874575905_2553374767244751445_n.jpg?stp=c0.0.579.579a_dst-jpg_s100x100_tt6&_nc_cat=110&ccb=1-7&_nc_sid=e99d92&_nc_ohc=tZZ8nYPbjpYQ7kNvwFRvR1D&_nc_oc=AdnAw9s_-y96lXHnZxheJMB-8mu0PG1lmU-LM59s5l17pv24MTEehgHP1Js6oMQ1g18&_nc_zt=24&_nc_ht=scontent-lga3-3.xx&_nc_gid=F5eImQrzx7asjjDmRYfa7A&oh=00_AfmnCboELvlFs1Q6t3V2-Xccj2QBrauVUh7DAB3LWNo7LA&oe=693E9011"
+                <img src="https://scontent-lga3-2.xx.fbcdn.net/v/t39.30808-6/470684087_3030984227053565_5714013013169943091_n.jpg?stp=c0.140.460.460a_dst-jpg_s206x206_tt6&_nc_cat=105&ccb=1-7&_nc_sid=714c7a&_nc_ohc=Za4_09TcjXYQ7kNvwEEWtOM&_nc_oc=AdmkEsk61G0W8V_sQTLYtmm-TTRP4iVgrz2UzyjD02PeDsawl-Tg4FDzy2McJ_L3CKU&_nc_zt=23&_nc_ht=scontent-lga3-2.xx&_nc_gid=OsKWwXvkTjDd2gaFpU3iGA&oh=00_Afm3eVJDl-aO_fbCLUm-ZowE3coiFgOM-Sc3YQni_-rHKQ&oe=694DC1FA"
                     alt="Nirjala Duwadi">
                 <p class="testimonial-text">
                     "Great service, friendly staff and the bus arrived exactly on time."
@@ -129,12 +129,12 @@ include '../../UI/components/Navbar.php';
             </div>
 
             <div class="testimonial-card">
-                <img src="https://t4.ftcdn.net/jpg/16/41/25/47/240_F_1641254744_POQ239xp8M3zfQBI400QGNbAtXyKPimh.jpg"
-                    alt="Ravi Chandra">
+                <img src="https://scontent-lga3-1.xx.fbcdn.net/v/t39.30808-1/475762861_1133330438448740_3491977969054013567_n.jpg?stp=dst-jpg_s200x200_tt6&_nc_cat=102&ccb=1-7&_nc_sid=e99d92&_nc_ohc=l7c7ggg25isQ7kNvwEzAYxW&_nc_oc=AdkxkqFBgb2Z2GL4sMIbJ5gqXYddInxP4zdlwZFAvdM1TDChOZYjXkQeS9L5ZModYKU&_nc_zt=24&_nc_ht=scontent-lga3-1.xx&_nc_gid=hViV4vGge6cokzcyit41Kw&oh=00_AfmY1ck7-NgnVz_Z3s1lbYpiwckxBLA1sUDA1XsTEY0hlA&oe=694DBCC6"
+                    alt="Garima Pandey">
                 <p class="testimonial-text">
                     "Highly reliable travel partner. I use them every month for my work trips."
                 </p>
-                <h4 class="testimonial-author">Ravi Chandra</h4>
+                <h4 class="testimonial-author">Garima Pandey</h4>
             </div>
 
         </div>

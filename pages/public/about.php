@@ -69,7 +69,7 @@ include '../../UI/components/Navbar.php';
 
         <!-- Right: image -->
         <aside class="about-image" aria-hidden="false">
-          <img src="https://sangamsedai.com.np/imagee/photo.jpg"
+          <img src="<?php echo HOME_BANNER_IMG_URL; ?>"
                alt="Team and service overview - <?php echo htmlspecialchars(SITE_NAME ?? 'Our Service'); ?>"
                onerror="this.src='https://via.placeholder.com/640x480?text=Image+Not+Found';" />
         </aside>
@@ -80,7 +80,7 @@ include '../../UI/components/Navbar.php';
       <div class="about-panel">
         <div class="stats" aria-hidden="false">
           <div class="stat">
-            <b>1,200+</b>
+            <b>12+</b>
             <small>Routes served</small>
           </div>
           <div class="stat">

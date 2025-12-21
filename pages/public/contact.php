@@ -49,25 +49,25 @@ include '../../UI/components/Navbar.php';
                 
                 <ul>
                     <li>
-                        <a href="#" target="_blank">
+                        <a href="https://www.facebook.com/udesh.regmi.3" target="_blank">
                             <i class="fab fa-facebook"></i> 
                             <span>Facebook</span>
                         </a>
                     </li>
                     <li>
-                        <a href="#" target="_blank">
-                            <i class="fab fa-twitter"></i> 
-                            <span>Twitter</span>
+                        <a href="https://www.linkedin.com/in/sangam-sedai/" target="_blank">
+                            <i class="fab fa-linkedin"></i> 
+                            <span>LinkedIn</span>
                         </a>
                     </li>
                     <li>
-                        <a href="#" target="_blank">
+                        <a href="https://www.instagram.com/sngmsedai/" target="_blank">
                             <i class="fab fa-instagram"></i> 
                             <span>Instagram</span>
                         </a>
                     </li>
                     <li>
-                        <a href="#" target="_blank">
+                        <a href="https://www.linkedin.com/in/udesh-regmi/" target="_blank">
                             <i class="fab fa-linkedin"></i> 
                             <span>LinkedIn</span>
                         </a>
@@ -101,15 +101,10 @@ include '../../UI/components/Navbar.php';
                     </div>
                     
                     <div class="map-item">
-                        <h4><i class="fas fa-bus"></i> Kalanki Bus Stop</h4>
-                        <iframe 
-                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3532.7805690337764!2d85.27856311007174!3d27.69317612601876!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39eb187a97f390b1%3A0xec3f47092df0d4ca!2sKalanki%2C%20Kathmandu%2044600%2C%20Nepal!5e0!3m2!1sen!2sus!4v1765123102755!5m2!1sen!2sus"
-                            allowfullscreen="" 
-                            loading="lazy" 
-                            referrerpolicy="no-referrer-when-downgrade">
-                        </iframe>
+                        <h4><i class="fas fa-bus"></i> Gongabu Bus Stop</h4>
+                     <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d12831.805213832033!2d85.30928154629831!3d27.7285672087317!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39eb18dc1d3ae109%3A0x18613d6dc3511853!2sGongabu%20Bus%20Park!5e0!3m2!1sen!2sus!4v1766327971533!5m2!1sen!2sus" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
                         <p style="font-size: 0.9rem; color: var(--gray); margin-top: 0.5rem;">
-                            <i class="fas fa-info-circle"></i> Major bus stop in Kalanki area
+                            <i class="fas fa-info-circle"></i> Major bus stop in Bus Park area
                         </p>
                     </div>
                 </div>

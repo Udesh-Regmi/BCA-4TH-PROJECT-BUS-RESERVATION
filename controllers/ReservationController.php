@@ -196,28 +196,53 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    if ($action === 'cancel') {
-        $id = (int) ($input['id'] ?? 0);
-        $resData = $reservation->getById($id);
+   // Replace the existing cancel action with this:
+if ($action === 'cancel') {
+    $id = (int) ($input['id'] ?? 0);
+    $resData = $reservation->getById($id);
 
-        if (!$resData) {
-            setAlert('Reservation not found', 'danger');
-        } else if ($resData['user_id'] != $_SESSION['user_id'] && !isAdmin()) {
-            setAlert('Unauthorized action', 'danger');
-        } else if ($reservation->updateStatus($id, 'cancelled')) {
-            $bus->restoreSeats($resData['bus_id'], 1);
-            setAlert('Reservation cancelled successfully', 'success');
-        } else {
-            setAlert('Failed to cancel reservation', 'danger');
-        }
-
-        if (isAdmin()) {
-            redirect(BASE_URL . '/pages/admin/reservations/index.php');
-        } else {
-            redirect(BASE_URL . '/pages/user/reservations.php');
-        }
-        exit();
+    if (!$resData) {
+        setAlert('Reservation not found', 'danger');
+    } else if ($resData['user_id'] != $_SESSION['user_id'] && !isAdmin()) {
+        setAlert('Unauthorized action', 'danger');
+    } else if ($reservation->updateStatus($id, 'cancelled')) {
+        $bus->restoreSeats($resData['bus_id'], 1); // This line should already be here
+        setAlert('Reservation cancelled successfully', 'success');
+    } else {
+        setAlert('Failed to cancel reservation', 'danger');
     }
+
+    if (isAdmin()) {
+        redirect(BASE_URL . '/pages/admin/reservations/index.php');
+    } else {
+        redirect(BASE_URL . '/pages/user/reservations.php');
+    }
+    exit();
+}
+
+if ($action === 'cancel_by_transaction') {
+    $transactionId = sanitize($input['transaction_id'] ?? '');
+    
+    $reservations = $reservation->getAllByTransactionId($transactionId);
+    
+    if (!$reservations || count($reservations) === 0) {
+        setAlert('Reservations not found', 'danger');
+    } else {
+        $firstRes = $reservations[0];
+        
+        if ($firstRes['user_id'] != $_SESSION['user_id'] && !isAdmin()) {
+            setAlert('Unauthorized action', 'danger');
+        } else if ($reservation->updateStatusByTransactionId($transactionId, 'cancelled')) {
+            $bus->restoreSeats($firstRes['bus_id'], count($reservations));
+            setAlert(count($reservations) . ' reservation(s) cancelled successfully', 'success');
+        } else {
+            setAlert('Failed to cancel reservations', 'danger');
+        }
+    }
+    
+    redirect(BASE_URL . '/pages/user/reservations.php');
+    exit();
+}
 
     if ($action === 'delete') {
         $id = (int) ($input['id'] ?? 0);

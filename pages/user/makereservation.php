@@ -326,6 +326,15 @@ include '../../UI/components/Alert.php';
     
     const pricePerSeat = <?php echo $busData['price']; ?>;
     const selectedSeats = new Set();
+    
+    // Add after the date input event listener
+document.getElementById('booking_date').addEventListener('change', function() {
+    const newDate = this.value;
+    const busId = <?php echo $busId; ?>;
+    
+    // Reload page with new date to get updated reserved seats
+    window.location.href = `<?php echo BASE_URL; ?>/pages/user/makereservation.php?bus_id=${busId}&date=${newDate}`;
+});
 
     function updateDisplay() {
         if (selectedSeats.size === 0) {
