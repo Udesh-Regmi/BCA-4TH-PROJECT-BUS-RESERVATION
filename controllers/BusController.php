@@ -40,6 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             setAlert('Failed to add bus. Bus number may already exist.', 'danger');
         }
         redirect(BASE_URL . '/pages/admin/buses/index.php');
+        
     }
     
     if ($action === 'update') {
