@@ -26,35 +26,34 @@ class Bus {
     /**
      * Create new bus
      */
-    public function create($data) {
-        $query = "INSERT INTO " . $this->table . " 
-                  (bus_number, bus_name, route_from, route_to, departure_time, arrival_time, 
-                   total_seats, available_seats, price, status, image_string) 
-                  VALUES (:bus_number, :bus_name, :route_from, :route_to, :departure_time, 
-                          :arrival_time, :total_seats, :available_seats, :price, :status, :image_string)";
-        
-        $stmt = $this->conn->prepare($query);
-        
-        $stmt->bindParam(":bus_number", $data['bus_number']);
-        $stmt->bindParam(":bus_name", $data['bus_name']);
-        $stmt->bindParam(":route_from", $data['route_from']);
-        $stmt->bindParam(":route_to", $data['route_to']);
-        $stmt->bindParam(":departure_time", $data['departure_time']);
-        $stmt->bindParam(":arrival_time", $data['arrival_time']);
-        $stmt->bindParam(":total_seats", $data['total_seats']);
-        $stmt->bindParam(":available_seats", $data['available_seats']);
-        $stmt->bindParam(":price", $data['price']);
-        $stmt->bindParam(":status", $data['status']);
-        $stmt->bindParam('image_string', $data['image_string']);
-        
-        try {
-            return $stmt->execute();
-        } catch (PDOException $e) {
-            error_log("Bus creation error: " . $e->getMessage());
-            return false;
-        }
+   public function create($data) {
+    $query = "INSERT INTO " . $this->table . " 
+              (bus_number, bus_name, route_from, route_to, departure_time, arrival_time, 
+               total_seats, available_seats, price, status, image_string) 
+              VALUES (:bus_number, :bus_name, :route_from, :route_to, :departure_time, 
+                      :arrival_time, :total_seats, :available_seats, :price, :status, :image_string)";
+    
+    $stmt = $this->conn->prepare($query);
+    
+    $stmt->bindParam(":bus_number", $data['bus_number']);
+    $stmt->bindParam(":bus_name", $data['bus_name']);
+    $stmt->bindParam(":route_from", $data['route_from']);
+    $stmt->bindParam(":route_to", $data['route_to']);
+    $stmt->bindParam(":departure_time", $data['departure_time']);
+    $stmt->bindParam(":arrival_time", $data['arrival_time']);
+    $stmt->bindParam(":total_seats", $data['total_seats']);
+    $stmt->bindParam(":available_seats", $data['available_seats']);
+    $stmt->bindParam(":price", $data['price']);
+    $stmt->bindParam(":status", $data['status']);
+    $stmt->bindParam(':image_string', $data['image_string']);
+    
+    if ($stmt->execute()) {
+        return $this->conn->lastInsertId();
+    } else {
+        error_log("Bus creation error: " . print_r($stmt->errorInfo(), true));
+        return false;
     }
-
+}
     /**
      * Get all buses
      */

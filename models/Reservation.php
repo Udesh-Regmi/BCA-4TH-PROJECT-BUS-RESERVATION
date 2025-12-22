@@ -343,6 +343,22 @@ class Reservation {
         
         return true;
     }
+     public function restoreSeats($busId, $seats) {
+        $query = "UPDATE " . $this->table . " 
+                  SET available_seats = available_seats + :seats 
+                  WHERE id = :id";
+        
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(":seats", $seats);
+        $stmt->bindParam(":id", $busId);
+        
+        try {
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            error_log("Seat restore error: " . $e->getMessage());
+            return false;
+        }
+    }
 
     public function getByStatus($status) {
         $query = "SELECT r.*, 

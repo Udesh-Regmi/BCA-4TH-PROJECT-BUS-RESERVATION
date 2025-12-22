@@ -84,6 +84,7 @@ include '../../UI/components/Alert.php';
                                                 onclick="return confirm('Delete this reservation?')">Delete</button>
                                         </form>
                                     <?php endif; ?>
+                                    
                                    <a class="btn-print" href="<?php echo BASE_URL; ?>/pages/user/print.php?id=<?php echo $res['id']; ?>">Print</a>
 
                                 </td>

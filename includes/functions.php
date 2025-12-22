@@ -90,12 +90,6 @@ function formatDateTime($datetime) {
     return date('M d, Y h:i A', strtotime($datetime));
 }
 
-/**
- * Format currency
- */
-function formatCurrency($amount) {
-    return '$' . number_format($amount, 2);
-}
 
 /**
  * Generate random string

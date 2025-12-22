@@ -8,8 +8,7 @@ require_once '../../../models/Reservation.php';
 $reservationId = isset($_GET['id']) ? (int) $_GET['id'] : 0;
 
 if (!$reservationId) {
-    $reservationId = reservationId();
-    echo $reservationId;
+ 
     die("Invalid Ticket Request");
 }
 
