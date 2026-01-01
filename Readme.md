@@ -3,6 +3,8 @@
 
 A comprehensive bus reservation platform built with **native PHP, MySQL, HTML, CSS, and JavaScript** following modular architecture without frameworks. Features role-based access (Admin/User), seat selection, and payment integration.
 
+Live Demo :(Bus Sewa) [https://bussewa.infinityfreeapp.com/BCA-4TH-PROJECT-BUS-RESERVATION/pages/public/home.php]
+
 <p align="center">
   <img src="https://img.shields.io/badge/PHP-8.x-blue?style=for-the-badge">
   <img src="https://img.shields.io/badge/MySQL-Database-orange?style=for-the-badge">
