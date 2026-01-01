@@ -857,7 +857,73 @@ $estimatedArrival = date('h:i A', strtotime($reservation['departure_time'] . ' +
             <button class="print-button" onclick="window.print()">
                 <i class="fas fa-print"></i> PRINT TICKET
             </button>
+       <button class="print-button" onclick="downloadTicket()"
+                style="background: linear-gradient(90deg, #28a745 0%, #20c997 100%); margin-left: 15px;">
+                <i class="fas fa-download"></i> DOWNLOAD
+            </button>
         </div>
     </div>
+    
+ <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Add animation on load
+            const ticket = document.querySelector('.ticket-card');
+            ticket.style.opacity = '0';
+            ticket.style.transform = 'translateY(20px)';
+
+            setTimeout(() => {
+                ticket.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                ticket.style.opacity = '1';
+                ticket.style.transform = 'translateY(0)';
+            }, 100);
+        });
+
+        // Download ticket as image
+        function downloadTicket() {
+            const ticketCard = document.querySelector('.ticket-card');
+            const printButton = document.querySelector('.print-section');
+
+            // Hide print button temporarily
+            printButton.style.display = 'none';
+
+            // Use html2canvas to capture ticket
+            if (typeof html2canvas !== 'undefined') {
+                html2canvas(ticketCard).then(canvas => {
+                    const link = document.createElement('a');
+                    link.download = 'Ticket-<?php echo $reservation['id']; ?>.png';
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+                    printButton.style.display = 'block';
+                });
+            } else {
+                // Load html2canvas if not available
+                const script = document.createElement('script');
+                script.src = 'https://html2canvas.hertzen.com/dist/html2canvas.min.js';
+                script.onload = function () {
+                    html2canvas(ticketCard).then(canvas => {
+                        const link = document.createElement('a');
+                        link.download = 'Ticket-<?php echo $reservation['id']; ?>.png';
+                        link.href = canvas.toDataURL('image/png');
+                        link.click();
+                        printButton.style.display = 'block';
+                    });
+                };
+                document.head.appendChild(script);
+                printButton.style.display = 'block';
+            }
+        }
+
+        // Add keyboard shortcut for print (Ctrl+P)
+        document.addEventListener('keydown', function (e) {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
+                e.preventDefault();
+                window.print();
+            }
+        });
+    </script>
+
+    <!-- Optional: Add html2canvas for download functionality -->
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 </body>
+
 </html>

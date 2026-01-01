@@ -46,7 +46,7 @@ include '../../../UI/components/Alert.php';
                     <h3 style="margin-bottom: 1rem; color: var(--primary);">Personal Information</h3>
                     <p><strong>Email:</strong> <?php echo $userData['email']; ?></p>
                     <p><strong>Phone:</strong> <?php echo $userData['phone'] ?? 'N/A'; ?></p>
-                    <p><strong>Role:</strong> <span class="badge badge-<?php echo $userData['role']; ?>"><?php echo ucfirst($userData['role']); ?></span></p>
+                    <p><strong>Role:</strong> <span class="badge badge-<?php echo $userData['role']; ?>"><?php echo ucfirst($userData['role']); ?></span> </p>
                     <p><strong>Member Since:</strong> <?php echo formatDate($userData['created_at']); ?></p>
                 </div>
                 
@@ -68,13 +68,15 @@ include '../../../UI/components/Alert.php';
                             <th>Route</th>
                             <th>Date</th>
                             <th>Seat</th>
+                            <th>Payment Method</th>
+                            <th>Transaction ID</th>
                             <th>Amount</th>
                             <th>Status</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php if (empty($userReservations)): ?>
-                            <tr><td colspan="7" class="text-center">No reservations found</td></tr>
+                            <tr><td colspan="9" class="text-center">No reservations found</td></tr>
                         <?php else: ?>
                             <?php foreach ($userReservations as $res): ?>
                                 <tr>
@@ -83,7 +85,9 @@ include '../../../UI/components/Alert.php';
                                     <td><?php echo $res['route_from'] . ' → ' . $res['route_to']; ?></td>
                                     <td><?php echo formatDate($res['booking_date']); ?></td>
                                     <td><?php echo $res['seat_number']; ?></td>
-                                    <td>$<?php echo number_format($res['total_amount'], 2); ?></td>
+                                    <td><?php echo $res['payment_method']?></td>
+                                    <td><?php echo $res['transaction_id']?></td>
+                                    <td>Rs <?php echo number_format($res['total_amount'], 2); ?></td>
                                     <td><span class="badge badge-<?php echo $res['status']; ?>"><?php echo ucfirst($res['status']); ?></span></td>
                                 </tr>
                             <?php endforeach; ?>

@@ -111,7 +111,7 @@ include '../../UI/components/Navbar.php';
         <div class="testimonial-container">
 
             <div class="testimonial-card">
-                <img src="https://scontent-lga3-2.xx.fbcdn.net/v/t39.30808-6/472208567_122201224238217651_4548090059175145620_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=833d8c&_nc_ohc=iBqVwqCjYLUQ7kNvwF-kdou&_nc_oc=Adl1Ug7nCqjuPI6RU3bqquwjvy8sx4L3uvm5uK3ol1KpfGhy1PlX4Gh51b4StQLVJKw&_nc_zt=23&_nc_ht=scontent-lga3-2.xx&_nc_gid=iNl5XGo-KR5tuWejTnWKWA&oh=00_Afns7YbLomGwI59mY5VL3FCzGuOP46jwg-1wTAoiaF9nPA&oe=694DF01C"
+                <img src="https://scontent-lga3-1.xx.fbcdn.net/v/t39.30808-6/472208550_122201224232217651_7102832813924357452_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=833d8c&_nc_ohc=5c8yWcyYVRkQ7kNvwHiy2uY&_nc_oc=Adn0GYdlrxGQigMGAMrdsXMs9qMW5NrlvtDDJ_F1zyNC-EuDj0S7BV634egA1Ba8Hyc&_nc_zt=23&_nc_ht=scontent-lga3-1.xx&_nc_gid=Okdl5eOy98hMMLlFc-w-8w&oh=00_AfrmBexDKeCX0Qh_XbjWx3d7-6Tp3jSdJ1zf_zqJPz_KpA&oe=695BD842"
                     alt="Sital Dangaura">
                 <p class="testimonial-text">
                     "The seats were super comfortable and the booking system was so easy to use!"
@@ -120,7 +120,7 @@ include '../../UI/components/Navbar.php';
             </div>
 
             <div class="testimonial-card">
-                <img src="https://scontent-lga3-2.xx.fbcdn.net/v/t39.30808-6/470684087_3030984227053565_5714013013169943091_n.jpg?stp=c0.140.460.460a_dst-jpg_s206x206_tt6&_nc_cat=105&ccb=1-7&_nc_sid=714c7a&_nc_ohc=Za4_09TcjXYQ7kNvwEEWtOM&_nc_oc=AdmkEsk61G0W8V_sQTLYtmm-TTRP4iVgrz2UzyjD02PeDsawl-Tg4FDzy2McJ_L3CKU&_nc_zt=23&_nc_ht=scontent-lga3-2.xx&_nc_gid=OsKWwXvkTjDd2gaFpU3iGA&oh=00_Afm3eVJDl-aO_fbCLUm-ZowE3coiFgOM-Sc3YQni_-rHKQ&oe=694DC1FA"
+                <img src="https://scontent-lga3-3.xx.fbcdn.net/v/t39.30808-1/465049957_1069942874575905_2553374767244751445_n.jpg?stp=c0.0.579.579a_cp0_dst-jpg_s60x60_tt6&_nc_cat=110&ccb=1-7&_nc_sid=e99d92&_nc_ohc=1eU3OnCLngoQ7kNvwFppxoQ&_nc_oc=AdliBeCweSJqt9pumD6f27g_TKk7Av_OCpgbAW3gTBYtjr5sEzXLiEgNN6m1JId2yx8&_nc_zt=24&_nc_ht=scontent-lga3-3.xx&_nc_gid=AkzzxUtNimqiC8YvPDXE_Q&oh=00_AfpvTKFzXusOqhYMgYbbEyngTKvl6nbToQq98XmqS8etuQ&oe=695C0191"
                     alt="Nirjala Duwadi">
                 <p class="testimonial-text">
                     "Great service, friendly staff and the bus arrived exactly on time."
@@ -129,12 +129,12 @@ include '../../UI/components/Navbar.php';
             </div>
 
             <div class="testimonial-card">
-                <img src="https://scontent-lga3-1.xx.fbcdn.net/v/t39.30808-1/475762861_1133330438448740_3491977969054013567_n.jpg?stp=dst-jpg_s200x200_tt6&_nc_cat=102&ccb=1-7&_nc_sid=e99d92&_nc_ohc=l7c7ggg25isQ7kNvwEzAYxW&_nc_oc=AdkxkqFBgb2Z2GL4sMIbJ5gqXYddInxP4zdlwZFAvdM1TDChOZYjXkQeS9L5ZModYKU&_nc_zt=24&_nc_ht=scontent-lga3-1.xx&_nc_gid=hViV4vGge6cokzcyit41Kw&oh=00_AfmY1ck7-NgnVz_Z3s1lbYpiwckxBLA1sUDA1XsTEY0hlA&oe=694DBCC6"
-                    alt="Garima Pandey">
+                <img src="https://scontent-lga3-2.xx.fbcdn.net/v/t39.30808-1/539292853_1306427741221585_5599924508912078577_n.jpg?stp=dst-jpg_s200x200_tt6&_nc_cat=100&ccb=1-7&_nc_sid=e99d92&_nc_ohc=tzTlvwTV56sQ7kNvwFnpsjW&_nc_oc=AdlmTWNgdQx2x3JrM75REb2usQnpULvwH_OKDI5SHmo1I8PiB3WvkKj6qOp9PIIE88o&_nc_zt=24&_nc_ht=scontent-lga3-2.xx&_nc_gid=frE9tPffjdU3N3isCJqGoQ&oh=00_Afrh-caBOOB1BZjBLGkD3BP9jceO8tir8JyBFz1uPrjn3g&oe=695C017D" 
+                    alt="Ranjit Nepal">
                 <p class="testimonial-text">
                     "Highly reliable travel partner. I use them every month for my work trips."
                 </p>
-                <h4 class="testimonial-author">Garima Pandey</h4>
+                <h4 class="testimonial-author">Ranjit Nepal</h4>
             </div>
 
         </div>

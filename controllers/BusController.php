@@ -8,7 +8,7 @@ require_once __DIR__ . '/../models/Bus.php';
 // Check if user is admin
 if (!isLoggedIn() || !isAdmin()) {
     setAlert('Unauthorized access', 'danger');
-    redirect(BASE_URL . '/index.php');
+        redirect(BASE_URL . '/pages/public/home.php');
     exit();
 }
 

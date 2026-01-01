@@ -94,6 +94,14 @@ class User {
         
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+// Update Role by admin  from users to admin 
+public function updateRole($userId) {
+    $query = "UPDATE " . $this->table . " SET role = 'admin' WHERE id = :id";
+    $stmt = $this->conn->prepare($query);
+    $stmt->bindParam(':id', $userId);
+    return $stmt->execute();
+}
+
 
     /**
      * Get all users

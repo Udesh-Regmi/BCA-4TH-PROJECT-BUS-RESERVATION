@@ -17,6 +17,7 @@
 
         <div class="footer-legal">
             <p>&copy; <?php echo date("Y"); ?> <?php echo SITE_NAME; ?>. All rights reserved.</p>
+            <p>Developed By <span><a href="https://www.linkedin.com/in/udesh-regmi/"> Udesh Regmi </a></span> & <span><a href="https://www.linkedin.com/in/sangam-sedai/"> Sangam Sedai</a></span></p>
         </div>
     </div>
 </footer>

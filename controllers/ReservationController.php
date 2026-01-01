@@ -32,55 +32,56 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $input['action'] ?? '';
 
     if ($action === 'create_multiple') {
-        $busId = (int) ($input['bus_id'] ?? 0);
-        $seatNumbers = $input['seat_numbers'] ?? '';
-        $bookingDate = sanitize($input['booking_date'] ?? '');
-        $passengerName = sanitize($input['passenger_name'] ?? '');
-        $passengerPhone = sanitize($input['passenger_phone'] ?? '');
-        $paymentMethod = sanitize($input['payment_method'] ?? 'cash');
-        $status = sanitize($input['status'] ?? 'pending');
-        $transactionId = sanitize($input['transaction_id'] ?? null);
+    $busId = (int) ($input['bus_id'] ?? 0);
+    $seatNumbers = $input['seat_numbers'] ?? '';
+    $bookingDate = sanitize($input['booking_date'] ?? '');
+    $passengerName = sanitize($input['passenger_name'] ?? '');
+    $passengerPhone = sanitize($input['passenger_phone'] ?? '');
+    $paymentMethod = sanitize($input['payment_method'] ?? 'cash');
+    $status = sanitize($input['status'] ?? 'pending');
+    $transactionId = sanitize($input['transaction_id'] ?? null);
 
-        $seatNumbersArray = array_map('intval', explode(',', $seatNumbers));
+    $seatNumbersArray = array_map('intval', explode(',', $seatNumbers));
 
-        if (empty($seatNumbersArray)) {
-            if (stripos($contentType, 'application/json') !== false) {
-                header('Content-Type: application/json');
-                echo json_encode(['success' => false, 'message' => 'No seats selected']);
-                exit();
-            } else {
-                setAlert('No seats selected', 'danger');
-                redirect(BASE_URL . '/pages/user/makereservation.php?bus_id=' . $busId);
-                exit();
-            }
+    if (empty($seatNumbersArray)) {
+        if (stripos($contentType, 'application/json') !== false) {
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'message' => 'No seats selected']);
+            exit();
+        } else {
+            setAlert('No seats selected', 'danger');
+            redirect(BASE_URL . '/pages/user/makereservation.php?bus_id=' . $busId);
+            exit();
         }
+    }
 
-        if (!$reservation->areSeatsAvailable($busId, $seatNumbersArray, $bookingDate)) {
-            if (stripos($contentType, 'application/json') !== false) {
-                header('Content-Type: application/json');
-                echo json_encode(['success' => false, 'message' => 'One or more seats already reserved']);
-                exit();
-            } else {
-                setAlert('One or more seats already reserved', 'danger');
-                redirect(BASE_URL . '/pages/user/makereservation.php?bus_id=' . $busId);
-                exit();
-            }
+    if (!$reservation->areSeatsAvailable($busId, $seatNumbersArray, $bookingDate)) {
+        if (stripos($contentType, 'application/json') !== false) {
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'message' => 'One or more seats already reserved']);
+            exit();
+        } else {
+            setAlert('One or more seats already reserved', 'danger');
+            redirect(BASE_URL . '/pages/user/makereservation.php?bus_id=' . $busId);
+            exit();
         }
+    }
 
-        $busData = $bus->getById($busId);
+    $busData = $bus->getById($busId);
 
-        if (!$busData) {
-            if (stripos($contentType, 'application/json') !== false) {
-                header('Content-Type: application/json');
-                echo json_encode(['success' => false, 'message' => 'Bus not found']);
-                exit();
-            } else {
-                setAlert('Bus not found', 'danger');
-                redirect(BASE_URL . '/pages/public/viewbus.php');
-                exit();
-            }
+    if (!$busData) {
+        if (stripos($contentType, 'application/json') !== false) {
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'message' => 'Bus not found']);
+            exit();
+        } else {
+            setAlert('Bus not found', 'danger');
+            redirect(BASE_URL . '/pages/public/viewbus.php');
+            exit();
         }
+    }
 
+    try {
         $created = $reservation->createMultiple(
             $busId,
             $_SESSION['user_id'],
@@ -106,18 +107,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 exit();
             }
         } else {
+            $errorMsg = 'Reservations failed - Check database';
             if (stripos($contentType, 'application/json') !== false) {
                 header('Content-Type: application/json');
-                echo json_encode(['success' => false, 'message' => 'Reservations failed']);
+                echo json_encode(['success' => false, 'message' => $errorMsg]);
                 exit();
             } else {
-                setAlert('Reservations failed', 'danger');
+                setAlert($errorMsg, 'danger');
                 redirect(BASE_URL . '/pages/user/makereservation.php?bus_id=' . $busId);
                 exit();
             }
         }
+    } catch (Exception $e) {
+        $errorMsg = 'Error: ' . $e->getMessage();
+        if (stripos($contentType, 'application/json') !== false) {
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'message' => $errorMsg]);
+            exit();
+        } else {
+            setAlert($errorMsg, 'danger');
+            redirect(BASE_URL . '/pages/user/makereservation.php?bus_id=' . $busId);
+            exit();
+        }
     }
-
+}
     if ($action === 'create') {
         $busId = (int) ($input['bus_id'] ?? 0);
         $seatNumber = (int) ($input['seat_number'] ?? 0);
@@ -206,8 +219,12 @@ if ($action === 'cancel') {
     } else if ($resData['user_id'] != $_SESSION['user_id'] && !isAdmin()) {
         setAlert('Unauthorized action', 'danger');
     } else if ($reservation->updateStatus($id, 'cancelled')) {
-        $bus->restoreSeats($resData['bus_id'], 1); // This line should already be here
-        setAlert('Reservation cancelled successfully', 'success');
+        $restoreResult = $bus->restoreSeats($resData['bus_id'], 1);
+        if (!$restoreResult) {
+            setAlert('Reservation cancelled but seat restore failed', 'warning');
+        } else {
+            setAlert('Reservation cancelled successfully', 'success');
+        }
     } else {
         setAlert('Failed to cancel reservation', 'danger');
     }

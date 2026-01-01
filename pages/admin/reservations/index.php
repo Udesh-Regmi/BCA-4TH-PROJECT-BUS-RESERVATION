@@ -21,10 +21,22 @@ include '../../../UI/components/Alert.php';
 ?>
 
 <div class="dashboard-layout">
-    <?php include '../../../UI/components/Sidebar.php'; ?>
+    <!-- <?php include '../../../UI/components/Sidebar.php'; ?> -->
 
     <main class="dashboard-content">
         <h1>Manage Reservations</h1>
+
+        <div class="admin-reservations">
+            <div class="reservation-search">
+                <input type="search" name="search-reservations" id="filter-reservations"
+                    placeholder="Search reservations...">
+            </div>
+
+            <a href="<?php echo BASE_URL . '/pages/user/reservations.php'; ?>" class="btn btn-primary">
+                My Reservations
+            </a>
+        </div>
+
 
         <div class="table-container">
             <table>
@@ -60,7 +72,8 @@ include '../../../UI/components/Alert.php';
                                         class="badge badge-<?php echo $res['status']; ?>"><?php echo ucfirst($res['status']); ?></span>
                                 </td>
                                 <td class="actions">
-                                    <a class="a-view" href="view.php?id=<?php echo $res['id']; ?>" class="btn-sm btn-warning">View</a>
+                                    <a class="a-view" href="view.php?id=<?php echo $res['id']; ?>"
+                                        class="btn-sm btn-warning">View</a>
                                     <?php if ($res['status'] !== 'cancelled'): ?>
                                         <form method="POST" action="<?php echo BASE_URL; ?>/controllers/ReservationController.php"
                                             style="display:inline;">
@@ -74,7 +87,7 @@ include '../../../UI/components/Alert.php';
                                     <?php if ($res['status'] === 'confirmed' || $res['status'] === 'cancelled'): ?>
                                         <form method="POST" action="<?php echo BASE_URL; ?>/controllers/ReservationController.php"
                                             style="display:inline;">
-            
+
                                             <input type="hidden" name="action" value="delete">
                                             <input type="hidden" name="id" value="<?php echo $res['id']; ?>">
                                             <button type="submit" class="btn-sm btn-danger btn-delete"

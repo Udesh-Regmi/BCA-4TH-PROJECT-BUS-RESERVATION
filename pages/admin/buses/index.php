@@ -37,6 +37,7 @@ include '../../../UI/components/Alert.php';
                         <th>Bus Name</th>
                         <th>Route</th>
                         <th>Departure</th>
+                        <th>Arrival Time</th>
                         <th>Seats</th>
                         <th>Price</th>
                         <th>Status</th>
@@ -53,7 +54,9 @@ include '../../../UI/components/Alert.php';
                                 <td><?php echo $busItem['bus_name']; ?></td>
                                 <td><?php echo $busItem['route_from'] . ' → ' . $busItem['route_to']; ?></td>
                                 <td><?php echo formatTime($busItem['departure_time']); ?></td>
-                                <td><?php echo $busItem['available_seats'] . '/' . $busItem['total_seats']; ?></td>
+                               <td><?php echo formatTime($busItem['arrival_time']); ?></td>
+
+                                <td><?php echo   $busItem['total_seats']; ?></td>
                                 <td>Rs<?php echo number_format($busItem['price'], 2); ?></td>
                                 <td><span class="badge badge-<?php echo $busItem['status']; ?>"><?php echo ucfirst($busItem['status']); ?></span></td>
                                 <td class="actions">
