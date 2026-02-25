@@ -29,6 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         redirect(BASE_URL . '/pages/user/profile.php');
+        exit();
     }
 
     if ($action === 'change_password') {
@@ -45,25 +46,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $userData = $user->getById($_SESSION['user_id']);
 
         if (password_verify($currentPassword, $userData['password'])) {
-            // Update password logic here
-            setAlert('Password changed successfully!', 'success');
+            if ($user->updatePassword($_SESSION['user_id'], $newPassword)) {
+                setAlert('Password changed successfully!', 'success');
+            } else {
+                setAlert('Failed to update password', 'danger');
+            }
         } else {
             setAlert('Current password is incorrect', 'danger');
         }
 
         redirect(BASE_URL . '/pages/user/profile.php');
+        exit();
     }
 
     if ($action === 'update_role') {
-        // Only admins can update roles
         if (!isAdmin()) {
             setAlert('Unauthorized action', 'danger');
             redirect(BASE_URL . '/pages/user/profile.php');
             exit();
         }
 
-        $userId = (int)$_POST['user_id'];
-        
+        $userId = (int) $_POST['user_id'];
+
         if ($user->updateRole($userId)) {
             setAlert('User role updated successfully!', 'success');
         } else {
@@ -71,8 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         redirect(BASE_URL . '/pages/admin/users/index.php');
+        exit();
     }
-
 }
-
 ?>
