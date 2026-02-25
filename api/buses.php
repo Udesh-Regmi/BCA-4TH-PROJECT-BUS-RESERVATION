@@ -15,37 +15,43 @@ $response = ['success' => false, 'message' => '', 'data' => null];
 
 switch ($method) {
     case 'GET':
-        $id = $_GET['id'] ?? null;
-        $from = $_GET['from'] ?? null;
-        $to = $_GET['to'] ?? null;
-        
+        $id = isset($_GET['id']) ? (int) $_GET['id'] : null;
+        $from = isset($_GET['from']) ? sanitize($_GET['from']) : null;
+        $to = isset($_GET['to']) ? sanitize($_GET['to']) : null;
+
         if ($id) {
             $busData = $bus->getById($id);
             if ($busData) {
                 $response['success'] = true;
                 $response['data'] = $busData;
             } else {
+                http_response_code(404);
                 $response['message'] = 'Bus not found';
             }
         } elseif ($from && $to) {
-            $buses = $bus->search($from, $to);
             $response['success'] = true;
-            $response['data'] = $buses;
+            $response['data'] = $bus->search($from, $to);
         } else {
-            $buses = $bus->getAll('active');
             $response['success'] = true;
-            $response['data'] = $buses;
+            $response['data'] = $bus->getAll('active');
         }
         break;
-        
+
     case 'POST':
         if (!isAdmin()) {
+            http_response_code(403);
             $response['message'] = 'Unauthorized';
             break;
         }
-        
+
         $data = json_decode(file_get_contents('php://input'), true);
-        
+
+        if (!$data) {
+            http_response_code(400);
+            $response['message'] = 'Invalid JSON body';
+            break;
+        }
+
         if ($bus->create($data)) {
             $response['success'] = true;
             $response['message'] = 'Bus created successfully';
@@ -53,16 +59,24 @@ switch ($method) {
             $response['message'] = 'Failed to create bus';
         }
         break;
-        
+
     case 'PUT':
         if (!isAdmin()) {
+            http_response_code(403);
             $response['message'] = 'Unauthorized';
             break;
         }
-        
+
         $data = json_decode(file_get_contents('php://input'), true);
-        $id = $data['id'] ?? null;
-        
+
+        if (!$data) {
+            http_response_code(400);
+            $response['message'] = 'Invalid JSON body';
+            break;
+        }
+
+        $id = isset($data['id']) ? (int) $data['id'] : null;
+
         if ($id && $bus->update($id, $data)) {
             $response['success'] = true;
             $response['message'] = 'Bus updated successfully';
@@ -70,21 +84,27 @@ switch ($method) {
             $response['message'] = 'Failed to update bus';
         }
         break;
-        
+
     case 'DELETE':
         if (!isAdmin()) {
+            http_response_code(403);
             $response['message'] = 'Unauthorized';
             break;
         }
-        
-        $id = $_GET['id'] ?? null;
-        
+
+        $id = isset($_GET['id']) ? (int) $_GET['id'] : null;
+
         if ($id && $bus->delete($id)) {
             $response['success'] = true;
             $response['message'] = 'Bus deleted successfully';
         } else {
             $response['message'] = 'Failed to delete bus';
         }
+        break;
+
+    default:
+        http_response_code(405);
+        $response['message'] = 'Method not allowed';
         break;
 }
 
