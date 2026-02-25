@@ -1,4 +1,4 @@
-    <?php
+<?php
 class User {
     private $conn;
     private $table = "users";
@@ -23,24 +23,19 @@ class User {
         $query = "INSERT INTO " . $this->table . " 
                   (name, email, password, phone, role) 
                   VALUES (:name, :email, :password, :phone, :role)";
-        
+
         $stmt = $this->conn->prepare($query);
-        
-        // Hash password
+
         $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
-        
-        // Bind parameters
+
         $stmt->bindParam(":name", $name);
         $stmt->bindParam(":email", $email);
         $stmt->bindParam(":password", $hashedPassword);
         $stmt->bindParam(":phone", $phone);
         $stmt->bindParam(":role", $role);
-        
+
         try {
-            if ($stmt->execute()) {
-                return true;
-            }
-            return false;
+            return $stmt->execute();
         } catch (PDOException $e) {
             error_log("User creation error: " . $e->getMessage());
             return false;
@@ -52,17 +47,17 @@ class User {
      */
     public function login($email, $password) {
         $query = "SELECT * FROM " . $this->table . " WHERE email = :email LIMIT 1";
-        
+
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(":email", $email);
         $stmt->execute();
-        
+
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
-        
+
         if ($user && password_verify($password, $user['password'])) {
             return $user;
         }
-        
+
         return false;
     }
 
@@ -74,11 +69,11 @@ class User {
                   FROM " . $this->table . " 
                   WHERE id = :id 
                   LIMIT 1";
-        
+
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(":id", $id);
         $stmt->execute();
-        
+
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
@@ -87,21 +82,30 @@ class User {
      */
     public function getByEmail($email) {
         $query = "SELECT * FROM " . $this->table . " WHERE email = :email LIMIT 1";
-        
+
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(":email", $email);
         $stmt->execute();
-        
+
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
-// Update Role by admin  from users to admin 
-public function updateRole($userId) {
-    $query = "UPDATE " . $this->table . " SET role = 'admin' WHERE id = :id";
-    $stmt = $this->conn->prepare($query);
-    $stmt->bindParam(':id', $userId);
-    return $stmt->execute();
-}
 
+    /**
+     * Update user role to admin
+     */
+    public function updateRole($userId) {
+        $query = "UPDATE " . $this->table . " SET role = 'admin' WHERE id = :id";
+
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':id', $userId);
+
+        try {
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            error_log("User role update error: " . $e->getMessage());
+            return false;
+        }
+    }
 
     /**
      * Get all users
@@ -110,10 +114,10 @@ public function updateRole($userId) {
         $query = "SELECT id, name, email, phone, role, created_at, updated_at 
                   FROM " . $this->table . " 
                   ORDER BY created_at DESC";
-        
+
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
-        
+
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
@@ -125,11 +129,11 @@ public function updateRole($userId) {
                   FROM " . $this->table . " 
                   WHERE role = :role 
                   ORDER BY created_at DESC";
-        
+
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(":role", $role);
         $stmt->execute();
-        
+
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
@@ -140,14 +144,14 @@ public function updateRole($userId) {
         $query = "UPDATE " . $this->table . " 
                   SET name = :name, email = :email, phone = :phone, updated_at = CURRENT_TIMESTAMP 
                   WHERE id = :id";
-        
+
         $stmt = $this->conn->prepare($query);
-        
+
         $stmt->bindParam(":name", $name);
         $stmt->bindParam(":email", $email);
         $stmt->bindParam(":phone", $phone);
         $stmt->bindParam(":id", $id);
-        
+
         try {
             return $stmt->execute();
         } catch (PDOException $e) {
@@ -163,14 +167,14 @@ public function updateRole($userId) {
         $query = "UPDATE " . $this->table . " 
                   SET password = :password, updated_at = CURRENT_TIMESTAMP 
                   WHERE id = :id";
-        
+
         $stmt = $this->conn->prepare($query);
-        
+
         $hashedPassword = password_hash($newPassword, PASSWORD_BCRYPT);
-        
+
         $stmt->bindParam(":password", $hashedPassword);
         $stmt->bindParam(":id", $id);
-        
+
         try {
             return $stmt->execute();
         } catch (PDOException $e) {
@@ -184,10 +188,10 @@ public function updateRole($userId) {
      */
     public function delete($id) {
         $query = "DELETE FROM " . $this->table . " WHERE id = :id";
-        
+
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(":id", $id);
-        
+
         try {
             return $stmt->execute();
         } catch (PDOException $e) {
@@ -201,22 +205,22 @@ public function updateRole($userId) {
      */
     public function emailExists($email, $excludeId = null) {
         $query = "SELECT id FROM " . $this->table . " WHERE email = :email";
-        
+
         if ($excludeId) {
             $query .= " AND id != :id";
         }
-        
+
         $query .= " LIMIT 1";
-        
+
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(":email", $email);
-        
+
         if ($excludeId) {
             $stmt->bindParam(":id", $excludeId);
         }
-        
+
         $stmt->execute();
-        
+
         return $stmt->rowCount() > 0;
     }
 
@@ -225,10 +229,10 @@ public function updateRole($userId) {
      */
     public function getTotalCount() {
         $query = "SELECT COUNT(*) as total FROM " . $this->table;
-        
+
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
-        
+
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         return $row['total'];
     }
@@ -238,11 +242,11 @@ public function updateRole($userId) {
      */
     public function getCountByRole($role) {
         $query = "SELECT COUNT(*) as total FROM " . $this->table . " WHERE role = :role";
-        
+
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(":role", $role);
         $stmt->execute();
-        
+
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         return $row['total'];
     }
@@ -255,12 +259,12 @@ public function updateRole($userId) {
                   FROM " . $this->table . " 
                   WHERE name LIKE :keyword OR email LIKE :keyword 
                   ORDER BY created_at DESC";
-        
+
         $stmt = $this->conn->prepare($query);
         $keyword = "%{$keyword}%";
         $stmt->bindParam(":keyword", $keyword);
         $stmt->execute();
-        
+
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }
