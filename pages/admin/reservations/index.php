@@ -1,4 +1,3 @@
-<!-- PAGES/ADMIN/RESERVATIONS/INDEX.PHP -->
 <?php
 require_once '../../../config/database.php';
 require_once '../../../config/constants.php';
@@ -21,7 +20,7 @@ include '../../../UI/components/Alert.php';
 ?>
 
 <div class="dashboard-layout">
-    <!-- <?php include '../../../UI/components/Sidebar.php'; ?> -->
+    <?php include '../../../UI/components/Sidebar.php'; ?>
 
     <main class="dashboard-content">
         <h1>Manage Reservations</h1>
@@ -36,7 +35,6 @@ include '../../../UI/components/Alert.php';
                 My Reservations
             </a>
         </div>
-
 
         <div class="table-container">
             <table>
@@ -61,19 +59,21 @@ include '../../../UI/components/Alert.php';
                     <?php else: ?>
                         <?php foreach ($reservations as $res): ?>
                             <tr>
-                                <td><?php echo $res['id']; ?></td>
-                                <td><?php echo $res['user_name']; ?></td>
-                                <td><?php echo $res['bus_name']; ?></td>
-                                <td><?php echo $res['route_from'] . ' → ' . $res['route_to']; ?></td>
+                                <td><?php echo htmlspecialchars($res['id']); ?></td>
+                                <td><?php echo htmlspecialchars($res['user_name']); ?></td>
+                                <td><?php echo htmlspecialchars($res['bus_name']); ?></td>
+                                <td><?php echo htmlspecialchars($res['route_from']) . ' → ' . htmlspecialchars($res['route_to']); ?></td>
                                 <td><?php echo formatDate($res['booking_date']); ?></td>
-                                <td><?php echo $res['seat_number']; ?></td>
+                                <td><?php echo htmlspecialchars($res['seat_number']); ?></td>
                                 <td>Rs. <?php echo number_format($res['total_amount'], 2); ?></td>
-                                <td><span
-                                        class="badge badge-<?php echo $res['status']; ?>"><?php echo ucfirst($res['status']); ?></span>
+                                <td>
+                                    <span class="badge badge-<?php echo htmlspecialchars($res['status']); ?>">
+                                        <?php echo ucfirst(htmlspecialchars($res['status'])); ?>
+                                    </span>
                                 </td>
                                 <td class="actions">
-                                    <a class="a-view" href="view.php?id=<?php echo $res['id']; ?>"
-                                        class="btn-sm btn-warning">View</a>
+                                    <a href="view.php?id=<?php echo $res['id']; ?>" class="btn-sm btn-warning">View</a>
+
                                     <?php if ($res['status'] !== 'cancelled'): ?>
                                         <form method="POST" action="<?php echo BASE_URL; ?>/controllers/ReservationController.php"
                                             style="display:inline;">
@@ -84,19 +84,16 @@ include '../../../UI/components/Alert.php';
                                                 onclick="return confirm('Cancel this reservation?')">Cancel</button>
                                         </form>
                                     <?php endif; ?>
-                                    <?php if ($res['status'] === 'confirmed' || $res['status'] === 'cancelled'): ?>
+
+                                    <?php if ($res['status'] === 'cancelled' || $res['status'] === 'completed'): ?>
                                         <form method="POST" action="<?php echo BASE_URL; ?>/controllers/ReservationController.php"
                                             style="display:inline;">
-
                                             <input type="hidden" name="action" value="delete">
                                             <input type="hidden" name="id" value="<?php echo $res['id']; ?>">
                                             <button type="submit" class="btn-sm btn-danger btn-delete"
                                                 onclick="return confirm('Delete this reservation?')">Delete</button>
-
                                         </form>
-
                                     <?php endif; ?>
-
                                 </td>
                             </tr>
                         <?php endforeach; ?>
