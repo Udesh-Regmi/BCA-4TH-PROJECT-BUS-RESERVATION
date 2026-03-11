@@ -357,10 +357,17 @@ tr:hover {
     
     .sidebar {
         width: 100%;
+        padding: 1rem 0;
+    }
+    
+    .dashboard-content {
+        width: 100%;
+        padding: 1rem 0.5rem;
     }
     
     .stats-grid {
         grid-template-columns: 1fr;
+        gap: 1rem;
     }
     
     .page-header {
@@ -369,7 +376,48 @@ tr:hover {
     }
     
     .table-container {
-        overflow-x: scroll;
+        overflow-x: auto;
+    }
+    
+    table {
+        font-size: 0.875rem;
+    }
+    
+    th, td {
+        padding: 0.75rem 0.5rem;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-card {
+        max-width: 100%;
+        padding: 1.5rem;
+    }
+    
+    .actions {
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+    
+    .btn-sm {
+        width: 100%;
+        text-align: center;
+    }
+    
+    .reservation-search input {
+        width: 100%;
+    }
+    
+    .admin-reservations {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .modal-content {
+        width: 95%;
+        padding: 1.5rem;
     }
 }
 .adminViewsUserButton{
@@ -434,3 +482,335 @@ tr:hover {
     transform: translateY(1px);
 }
 
+
+
+/* Added Css  */
+
+
+
+
+
+/* UI/CSS/ADMIN.CSS - Additional Admin Styles */
+
+.admin-header {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    color: var(--white);
+    padding: 2rem;
+    border-radius: 10px;
+    margin-bottom: 2rem;
+}
+
+.admin-header h1 {
+    margin: 0;
+    color: var(--white);
+}
+
+.admin-header p {
+    margin: 0.5rem 0 0;
+    opacity: 0.9;
+}
+
+/* Statistics Cards */
+.stat-card.clickable {
+    cursor: pointer;
+}
+
+.stat-card.clickable:hover {
+    transform: translateY(-5px);
+}
+
+/* Data Tables */
+.data-table {
+    background: var(--white);
+    border-radius: 10px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.table-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.table-search {
+    display: flex;
+    gap: 1rem;
+}
+
+.table-search input {
+    padding: 0.5rem 1rem;
+    border: 2px solid var(--light);
+    border-radius: 5px;
+    width: 300px;
+}
+
+.table-search button {
+    padding: 0.5rem 1.5rem;
+    background: var(--primary);
+    color: var(--white);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* Bulk Actions */
+.bulk-actions {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    background: var(--light);
+    border-radius: 5px;
+}
+
+.bulk-actions select {
+    padding: 0.5rem;
+    border: 2px solid var(--white);
+    border-radius: 5px;
+}
+
+/* Status Indicators */
+.status-indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 0.5rem;
+}
+
+.status-indicator.active {
+    background: var(--success);
+}
+
+.status-indicator.inactive {
+    background: var(--danger);
+}
+
+/* Charts Container */
+.charts-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 2rem;
+    margin: 2rem 0;
+}
+
+.chart-card {
+    background: var(--white);
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.chart-card h3 {
+    margin-bottom: 1rem;
+    color: var(--primary);
+}
+
+/* Action Buttons */
+.btn-group {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.btn-icon {
+    width: 90px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+button.btn-action {
+    width: 90px;
+    height: 35px;
+    display: flex;
+    color: var(--white);
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+.a-btn-view{
+    background: #50ce08; 
+}
+
+/* Cancel button */
+button.btn-cancel {
+    background: #cab436;
+}
+
+/* Delete button */
+button.btn-delete {
+    background: #e21575; 
+    display: none;
+}
+
+/* Hover effect */
+button.btn-action:hover {
+    opacity: 0.9;
+}
+.btn-print{
+    width: 90px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #db3517;
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 14px;
+    transition: background 0.3s;
+    
+}
+
+.btn-view:hover {
+    background: #00596b;
+}
+.btn-cancel:hover {
+    background: #8a7b1c;
+}
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal.active {
+    display: flex;
+}
+
+.modal-content {
+    background: var(--white);
+    padding: 2rem;
+    border-radius: 10px;
+    max-width: 600px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--secondary);
+}
+
+/* Pagination */
+.pagination {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 2rem;
+}
+
+.pagination a, .pagination span {
+    padding: 0.5rem 1rem;
+    border: 2px solid var(--light);
+    border-radius: 5px;
+    text-decoration: none;
+    color: var(--dark);
+    transition: all 0.3s;
+}
+
+.pagination a:hover {
+    background: var(--primary);
+    color: var(--white);
+    border-color: var(--primary);
+}
+
+.pagination .active {
+    background: var(--primary);
+    color: var(--white);
+    border-color: var(--primary);
+}
+
+/* Loading States */
+.loading {
+    text-align: center;
+    padding: 3rem;
+}
+
+.spinner {
+    border: 4px solid var(--light);
+    border-top: 4px solid var(--primary);
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+    margin: 0 auto;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Empty States */
+.empty-state {
+    text-align: center;
+    padding: 3rem;
+    color: var(--secondary);
+}
+
+.empty-state i {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    opacity: 0.3;
+}
+
+/* Responsive Admin Panel */
+@media (max-width: 992px) {
+    .charts-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .table-search {
+        flex-direction: column;
+    }
+    
+    .table-search input {
+        width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .admin-header {
+        padding: 1.5rem;
+    }
+    
+    .bulk-actions {
+        flex-direction: column;
+    }
+    
+    .btn-group {
+        flex-wrap: wrap;
+    }
+}
