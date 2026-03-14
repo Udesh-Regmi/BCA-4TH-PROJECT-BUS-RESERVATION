@@ -72,6 +72,11 @@ include '../../UI/components/Alert.php';
             Don't have an account?
             <a href="register.php">Register here</a>
         </p>
+
+        <p class="auth-switch admin-forgot-link">
+            Forget Password?
+            <a href="<?php echo BASE_URL; ?>/pages/public/admin-forgot-password.php">Forgot password </a>
+        </p>
     </div>
 </div>
 

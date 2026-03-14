@@ -2,7 +2,6 @@
 require_once '../../config/constants.php';
 require_once '../../includes/session.php';
 $pageTitle = "Home - " . SITE_NAME;
-$additionalCSS = "home.css";
 include '../../UI/components/Header.php';
 include '../../UI/components/Navbar.php';
 ?>
@@ -72,12 +71,14 @@ include '../../UI/components/Navbar.php';
             <p class="feature-text">
                 Fast and hastle free online ticket booking and management.
             </p>
-        </div> <div class="feature-card">
+        </div>
+
+        <div class="feature-card">
             <h3 class="feature-title">Support</h3>
             <p class="feature-text">
                 24/7 customer support to assist you before, during, and after your trip.
             </p>
-      
+        </div>
     </section>
 
 
@@ -88,19 +89,32 @@ include '../../UI/components/Navbar.php';
         <div class="timeline-container">       
 
             <div class="timeline-item">
-                <h3 class="timeline-year">2020</h3>
+                <h3 class="timeline-year">2025</h3>
                 <p class="timeline-text">
-                    Founded Dhading Bus Sewa with a vision to transform road travel.
+                    Founded <?php echo SITE_NAME; ?> with a vision to revolutionize online bus ticketing and travel experience and expanded to 5+ routes nationwide with a fleet of 10+ modern buses
                 </p>
             </div>
 
+
+
             <div class="timeline-item">
-                <h3 class="timeline-year">2025</h3>
+                <h3 class="timeline-year">2026</h3>
                 <p class="timeline-text">
-                    Expanded to 50+ routes nationwide with a fleet of 100+ modern buses.
+                   Goal to revolutionizing the bus industry with live payment gateway and  AI powered user details & route optimization and premium passenger services.
                 </p>
             </div>
+
         </div>
+    </section>
+
+    <!-- CTA SECTION -->
+    <section class="cta-section">
+        <h2 class="cta-title">Ready to Plan Your Journey?</h2>
+        <p class="cta-text">Book your ticket now and enjoy comfortable, affordable travel with our premium bus service across the country.</p>
+        <a href="<?= BASE_URL ?>/pages/public/viewbus.php" class="cta-link">
+            Explore Buses Now
+            <span>→</span>
+        </a>
     </section>
 
 
@@ -111,7 +125,7 @@ include '../../UI/components/Navbar.php';
         <div class="testimonial-container">
 
             <div class="testimonial-card">
-                <img src="https://scontent-lga3-1.xx.fbcdn.net/v/t39.30808-6/472208550_122201224232217651_7102832813924357452_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=833d8c&_nc_ohc=5c8yWcyYVRkQ7kNvwHiy2uY&_nc_oc=Adn0GYdlrxGQigMGAMrdsXMs9qMW5NrlvtDDJ_F1zyNC-EuDj0S7BV634egA1Ba8Hyc&_nc_zt=23&_nc_ht=scontent-lga3-1.xx&_nc_gid=Okdl5eOy98hMMLlFc-w-8w&oh=00_AfrmBexDKeCX0Qh_XbjWx3d7-6Tp3jSdJ1zf_zqJPz_KpA&oe=695BD842"
+                <img src="https://c8r9b7bq24.ufs.sh/f/Z9wyzBEmJFbSJKaPGIXCczYUs8R5S4WE1KJ2NTAjmoyrHDqb"
                     alt="Sital Dangaura">
                 <p class="testimonial-text">
                     "The seats were super comfortable and the booking system was so easy to use!"
@@ -120,21 +134,21 @@ include '../../UI/components/Navbar.php';
             </div>
 
             <div class="testimonial-card">
-                <img src="https://scontent-lga3-3.xx.fbcdn.net/v/t39.30808-1/465049957_1069942874575905_2553374767244751445_n.jpg?stp=c0.0.579.579a_cp0_dst-jpg_s60x60_tt6&_nc_cat=110&ccb=1-7&_nc_sid=e99d92&_nc_ohc=1eU3OnCLngoQ7kNvwFppxoQ&_nc_oc=AdliBeCweSJqt9pumD6f27g_TKk7Av_OCpgbAW3gTBYtjr5sEzXLiEgNN6m1JId2yx8&_nc_zt=24&_nc_ht=scontent-lga3-3.xx&_nc_gid=AkzzxUtNimqiC8YvPDXE_Q&oh=00_AfpvTKFzXusOqhYMgYbbEyngTKvl6nbToQq98XmqS8etuQ&oe=695C0191"
-                    alt="Nirjala Duwadi">
+                <img src="https://c8r9b7bq24.ufs.sh/f/Z9wyzBEmJFbSxULsMZjBpu6NqEiQcZj5Tb2YV3UM9KHWDlgz"
+                    alt="Ranjana Khanal">
                 <p class="testimonial-text">
                     "Great service, friendly staff and the bus arrived exactly on time."
                 </p>
-                <h4 class="testimonial-author">Nirjala Duwadi</h4>
+                <h4 class="testimonial-author">Ranjana Khanal</h4>
             </div>
 
             <div class="testimonial-card">
-                <img src="https://scontent-lga3-2.xx.fbcdn.net/v/t39.30808-1/539292853_1306427741221585_5599924508912078577_n.jpg?stp=dst-jpg_s200x200_tt6&_nc_cat=100&ccb=1-7&_nc_sid=e99d92&_nc_ohc=tzTlvwTV56sQ7kNvwFnpsjW&_nc_oc=AdlmTWNgdQx2x3JrM75REb2usQnpULvwH_OKDI5SHmo1I8PiB3WvkKj6qOp9PIIE88o&_nc_zt=24&_nc_ht=scontent-lga3-2.xx&_nc_gid=frE9tPffjdU3N3isCJqGoQ&oh=00_Afrh-caBOOB1BZjBLGkD3BP9jceO8tir8JyBFz1uPrjn3g&oe=695C017D" 
-                    alt="Ranjit Nepal">
+                <img src="https://scontent-lga3-3.xx.fbcdn.net/v/t39.30808-6/649580677_4456035597961172_162104780891670108_n.jpg?stp=dst-jpg_p526x296_tt6&_nc_cat=110&ccb=1-7&_nc_sid=c7cdda&_nc_eui2=AeFD2HA9uu2bVeJ1A2J2UIkILPTrIYuBci0s9Oshi4FyLS00N1DUFdoO0eLJF0JZqoxEEEAcmycI5sIN2gxwvLQv&_nc_ohc=ceN6lh6rBb4Q7kNvwFubphl&_nc_oc=AdnVB4DtT0Val7PgwVFCi4bxv12Qa8ls56bAiIVHtYiHJDXFfbievkyYqo3v-QYw-1g&_nc_zt=23&_nc_ht=scontent-lga3-3.xx&_nc_gid=-_qQXC5-3-_-QRH5Qc40YA&_nc_ss=8&oh=00_AfwuT5IDYPsfh0as4VRJU18FnxwcE5y4xuYaNrVPBkKGUw&oe=69B92B83" 
+                    alt="Sabitri Pandit">
                 <p class="testimonial-text">
                     "Highly reliable travel partner. I use them every month for my work trips."
                 </p>
-                <h4 class="testimonial-author">Ranjit Nepal</h4>
+                <h4 class="testimonial-author">Sabitri Pandit</h4>
             </div>
 
         </div>

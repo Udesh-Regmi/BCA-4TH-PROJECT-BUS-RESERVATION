@@ -10,7 +10,8 @@ $database = new Database();
 $db = $database->getConnection();
 $reservation = new Reservation($db);
 
-$reservations = $reservation->getAll();
+$search = isset($_GET['search']) ? trim(sanitize($_GET['search'])) : '';
+$reservations = $reservation->getAll($search);
 
 $pageTitle = "Manage Reservations - " . SITE_NAME;
 $additionalCSS = "admin.css";
@@ -26,10 +27,15 @@ include '../../../UI/components/Alert.php';
         <h1>Manage Reservations</h1>
 
         <div class="admin-reservations">
-            <div class="reservation-search">
-                <input type="search" name="search-reservations" id="filter-reservations"
-                    placeholder="Search reservations...">
-            </div>
+            <form method="GET" class="reservation-search" role="search">
+                <input type="search" name="search" id="filter-reservations"
+                    placeholder="Search by bus no, bus name, user, route, seat, status..."
+                    value="<?php echo htmlspecialchars($search); ?>">
+                <button type="submit" class="btn btn-primary">Search</button>
+                <?php if ($search !== ''): ?>
+                    <a href="index.php" class="btn btn-secondary-search">Clear</a>
+                <?php endif; ?>
+            </form>
 
             <a href="<?php echo BASE_URL . '/pages/user/reservations.php'; ?>" class="btn btn-primary">
                 My Reservations
@@ -42,6 +48,7 @@ include '../../../UI/components/Alert.php';
                     <tr>
                         <th>ID</th>
                         <th>User</th>
+                        <th>Bus No</th>
                         <th>Bus</th>
                         <th>Route</th>
                         <th>Date</th>
@@ -54,13 +61,14 @@ include '../../../UI/components/Alert.php';
                 <tbody>
                     <?php if (empty($reservations)): ?>
                         <tr>
-                            <td colspan="9" class="text-center">No reservations found</td>
+                            <td colspan="10" class="text-center">No reservations found</td>
                         </tr>
                     <?php else: ?>
                         <?php foreach ($reservations as $res): ?>
                             <tr>
                                 <td><?php echo htmlspecialchars($res['id']); ?></td>
                                 <td><?php echo htmlspecialchars($res['user_name']); ?></td>
+                                <td><?php echo htmlspecialchars($res['bus_number']); ?></td>
                                 <td><?php echo htmlspecialchars($res['bus_name']); ?></td>
                                 <td><?php echo htmlspecialchars($res['route_from']) . ' → ' . htmlspecialchars($res['route_to']); ?></td>
                                 <td><?php echo formatDate($res['booking_date']); ?></td>
@@ -72,7 +80,10 @@ include '../../../UI/components/Alert.php';
                                     </span>
                                 </td>
                                 <td class="actions">
-                                    <a href="view.php?id=<?php echo $res['id']; ?>" class="btn-sm btn-warning">View</a>
+                                    <a href="view.php?id=<?php echo $res['id']; ?>" class="btn-sm ">View</a>
+                                    <?php if ($res['status'] !== 'cancelled'): ?>
+                                        <a href="edit.php?id=<?php echo $res['id']; ?>" class="btn-sm btn-secondary">Edit</a>
+                                    <?php endif; ?>
 
                                     <?php if ($res['status'] !== 'cancelled'): ?>
                                         <form method="POST" action="<?php echo BASE_URL; ?>/controllers/ReservationController.php"
@@ -85,15 +96,13 @@ include '../../../UI/components/Alert.php';
                                         </form>
                                     <?php endif; ?>
 
-                                    <?php if ($res['status'] === 'cancelled' || $res['status'] === 'completed'): ?>
-                                        <form method="POST" action="<?php echo BASE_URL; ?>/controllers/ReservationController.php"
-                                            style="display:inline;">
-                                            <input type="hidden" name="action" value="delete">
-                                            <input type="hidden" name="id" value="<?php echo $res['id']; ?>">
-                                            <button type="submit" class="btn-sm btn-danger btn-delete"
-                                                onclick="return confirm('Delete this reservation?')">Delete</button>
-                                        </form>
-                                    <?php endif; ?>
+                                    <form method="POST" action="<?php echo BASE_URL; ?>/controllers/ReservationController.php"
+                                        style="display:inline;">
+                                        <input type="hidden" name="action" value="delete">
+                                        <input type="hidden" name="id" value="<?php echo $res['id']; ?>">
+                                        <button type="submit" class="btn-sm btn-danger btn-delete"
+                                            onclick="return confirm('Delete this reservation permanently?')">Delete</button>
+                                    </form>
                                 </td>
                             </tr>
                         <?php endforeach; ?>

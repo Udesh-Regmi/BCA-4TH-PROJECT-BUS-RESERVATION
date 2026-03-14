@@ -148,16 +148,34 @@ class Reservation {
         }
     }
 
-    public function getAll() {
+    public function getAll($search = '') {
         $query = "SELECT r.*, 
                          u.name as user_name, u.email, 
                          b.bus_name, b.bus_number, b.route_from, b.route_to 
                   FROM " . $this->table . " r
                   INNER JOIN users u ON r.user_id = u.id
-                  INNER JOIN buses b ON r.bus_id = b.id
-                  ORDER BY r.created_at DESC";
+                  INNER JOIN buses b ON r.bus_id = b.id";
+
+        $hasSearch = !empty($search);
+        if ($hasSearch) {
+            $query .= " WHERE b.bus_name LIKE :search
+                        OR b.bus_number LIKE :search
+                        OR u.name LIKE :search
+                        OR u.email LIKE :search
+                        OR b.route_from LIKE :search
+                        OR b.route_to LIKE :search
+                        OR r.status LIKE :search
+                        OR CAST(r.seat_number AS CHAR) LIKE :search
+                        OR CAST(r.booking_date AS CHAR) LIKE :search";
+        }
+
+        $query .= " ORDER BY r.created_at DESC";
         
         $stmt = $this->conn->prepare($query);
+        if ($hasSearch) {
+            $searchTerm = "%{$search}%";
+            $stmt->bindParam(":search", $searchTerm);
+        }
         $stmt->execute();
         
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -183,7 +201,7 @@ class Reservation {
         $query = "SELECT r.*, 
                          u.name as user_name, u.email, u.phone as user_phone, 
                          b.bus_name, b.bus_number, b.route_from, b.route_to, 
-                         b.departure_time, b.arrival_time, b.price
+                         b.departure_time, b.arrival_time, b.price, b.total_seats
                   FROM " . $this->table . " r
                   INNER JOIN users u ON r.user_id = u.id
                   INNER JOIN buses b ON r.bus_id = b.id
@@ -330,6 +348,64 @@ class Reservation {
         
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         return $row['count'] == 0;
+    }
+
+    public function isSeatAvailableForUpdate($reservationId, $busId, $seatNumber, $date) {
+        $query = "SELECT COUNT(*) as count 
+                  FROM " . $this->table . " 
+                  WHERE bus_id = :bus_id 
+                  AND seat_number = :seat_number 
+                  AND booking_date = :date 
+                  AND status != 'cancelled'
+                  AND id != :reservation_id";
+
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(":bus_id", $busId);
+        $stmt->bindParam(":seat_number", $seatNumber);
+        $stmt->bindParam(":date", $date);
+        $stmt->bindParam(":reservation_id", $reservationId);
+        $stmt->execute();
+
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $row['count'] == 0;
+    }
+
+    public function canUserEditWithinHours($reservationCreatedAt, $hours = 4) {
+        if (empty($reservationCreatedAt)) {
+            return false;
+        }
+
+        $createdTimestamp = strtotime($reservationCreatedAt);
+        if ($createdTimestamp === false) {
+            return false;
+        }
+
+        $deadlineTimestamp = strtotime("+{$hours} hours", $createdTimestamp);
+        return time() <= $deadlineTimestamp;
+    }
+
+    public function updateReservationDetails($id, $bookingDate, $seatNumber, $passengerName, $passengerPhone) {
+        $query = "UPDATE " . $this->table . " 
+                  SET booking_date = :booking_date,
+                      seat_number = :seat_number,
+                      passenger_name = :passenger_name,
+                      passenger_phone = :passenger_phone,
+                      updated_at = CURRENT_TIMESTAMP
+                  WHERE id = :id";
+
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(":booking_date", $bookingDate);
+        $stmt->bindParam(":seat_number", $seatNumber);
+        $stmt->bindParam(":passenger_name", $passengerName);
+        $stmt->bindParam(":passenger_phone", $passengerPhone);
+        $stmt->bindParam(":id", $id);
+
+        try {
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            error_log("Reservation update error: " . $e->getMessage());
+            return false;
+        }
     }
 
     public function areSeatsAvailable($busId, $seatNumbers, $date) {

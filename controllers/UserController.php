@@ -77,5 +77,51 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         redirect(BASE_URL . '/pages/admin/users/index.php');
         exit();
     }
+    if ($action === 'delete_user') {
+        if (!isAdmin()) {
+            setAlert('Unauthorized action', 'danger');
+            redirect(BASE_URL . '/pages/user/profile.php');
+            exit();
+        }
+
+        $userId = (int) $_POST['user_id'];
+
+        if ($userId === (int) $_SESSION['user_id']) {
+            setAlert('You cannot delete your own admin account from this panel', 'warning');
+            redirect(BASE_URL . '/pages/admin/users/index.php');
+            exit();
+        }
+
+        // Check if target user is an admin
+        $targetUser = $user->getById($userId);
+        if ($targetUser && $targetUser['role'] === 'admin') {
+            setAlert('You cannot delete admin accounts. Only regular users can be deleted.', 'warning');
+            redirect(BASE_URL . '/pages/admin/users/index.php');
+            exit();
+        }
+
+        if ($user->delete($userId)) {
+            setAlert('User deleted successfully!', 'success');
+        } else {
+            setAlert('Failed to delete user', 'danger');
+        }
+
+        redirect(BASE_URL . '/pages/admin/users/index.php');
+        exit();
+    }
+
+    if ($action === 'delete_account') {
+        $userId = (int) $_SESSION['user_id'];
+
+        if ($user->delete($userId)) {
+            session_destroy();
+            setAlert('Account deleted successfully!', 'success');
+            redirect(BASE_URL . '/pages/public/login.php');
+        } else {
+            setAlert('Failed to delete account', 'danger');
+            redirect(BASE_URL . '/pages/user/profile.php');
+        }
+        exit();
+    }
 }
 ?>

@@ -372,3 +372,95 @@
 2025-12-21 14:42:39 - Pending reservation from session: 
 2025-12-21 14:42:39 - Transaction UUID from session: 
 2025-12-21 14:42:39 - ERROR: No pending reservation in session
+2026-03-14 03:21:27 - === eSewa Success Callback Started ===
+2026-03-14 03:21:27 - GET params: Array
+(
+    [data] => eyJ0cmFuc2FjdGlvbl9jb2RlIjoiMDAwRUZGMyIsInN0YXR1cyI6IkNPTVBMRVRFIiwidG90YWxfYW1vdW50IjoiMjAwLjAiLCJ0cmFuc2FjdGlvbl91dWlkIjoiVFhOMTc3MzQ1ODM3MDc4Nm81MjhodmRsYSIsInByb2R1Y3RfY29kZSI6IkVQQVlURVNUIiwic2lnbmVkX2ZpZWxkX25hbWVzIjoidHJhbnNhY3Rpb25fY29kZSxzdGF0dXMsdG90YWxfYW1vdW50LHRyYW5zYWN0aW9uX3V1aWQscHJvZHVjdF9jb2RlLHNpZ25lZF9maWVsZF9uYW1lcyIsInNpZ25hdHVyZSI6IklPNU1UWDJEUW5WbUtlaDNocHpvZG84bXFza1kvOUdTSTRVY0hHUTZsaUE9In0=
+)
+
+2026-03-14 03:21:27 - Session ID: 78152d110bf4c563e4dc03614cdfd9c3
+2026-03-14 03:21:27 - User ID: 6
+2026-03-14 03:21:27 - Encoded data received: Yes
+2026-03-14 03:21:27 - Decoded payment data: Array
+(
+    [transaction_code] => 000EFF3
+    [status] => COMPLETE
+    [total_amount] => 200.0
+    [transaction_uuid] => TXN1773458370786o528hvdla
+    [product_code] => EPAYTEST
+    [signed_field_names] => transaction_code,status,total_amount,transaction_uuid,product_code,signed_field_names
+    [signature] => IO5MTX2DQnVmKeh3hpzodo8mqskY/9GSI4UcHGQ6liA=
+)
+
+2026-03-14 03:21:27 - Payment status: COMPLETE
+2026-03-14 03:21:27 - Pending reservation from session: Array
+(
+    [bus_id] => 12
+    [seat_numbers] => 6,10
+    [booking_date] => 2026-03-14
+    [passenger_name] => Sangam Sedai
+    [passenger_phone] => 9876543210
+    [amount] => 200
+    [payment_method] => esewa
+)
+
+2026-03-14 03:21:27 - Transaction UUID from session: TXN1773458370786o528hvdla
+2026-03-14 03:21:27 - Comparing UUIDs - Session: TXN1773458370786o528hvdla, Response: TXN1773458370786o528hvdla
+2026-03-14 03:21:27 - Transaction UUID verified successfully
+2026-03-14 03:21:27 - Transaction code: 000EFF3
+2026-03-14 03:21:27 - Multiple seats reservation: 6,10
+2026-03-14 03:21:27 - Multiple reservations result: Array
+(
+    [0] => 217
+    [1] => 218
+)
+
+2026-03-14 03:21:27 - Multiple reservations created successfully
+2026-03-14 03:21:32 - === eSewa Success Callback Started ===
+2026-03-14 03:21:32 - GET params: Array
+(
+    [data] => eyJ0cmFuc2FjdGlvbl9jb2RlIjoiMDAwRUZGMyIsInN0YXR1cyI6IkNPTVBMRVRFIiwidG90YWxfYW1vdW50IjoiMjAwLjAiLCJ0cmFuc2FjdGlvbl91dWlkIjoiVFhOMTc3MzQ1ODM3MDc4Nm81MjhodmRsYSIsInByb2R1Y3RfY29kZSI6IkVQQVlURVNUIiwic2lnbmVkX2ZpZWxkX25hbWVzIjoidHJhbnNhY3Rpb25fY29kZSxzdGF0dXMsdG90YWxfYW1vdW50LHRyYW5zYWN0aW9uX3V1aWQscHJvZHVjdF9jb2RlLHNpZ25lZF9maWVsZF9uYW1lcyIsInNpZ25hdHVyZSI6IklPNU1UWDJEUW5WbUtlaDNocHpvZG84bXFza1kvOUdTSTRVY0hHUTZsaUE9In0=
+)
+
+2026-03-14 03:21:32 - Session ID: 78152d110bf4c563e4dc03614cdfd9c3
+2026-03-14 03:21:32 - User ID: 6
+2026-03-14 03:21:32 - Encoded data received: Yes
+2026-03-14 03:21:32 - Decoded payment data: Array
+(
+    [transaction_code] => 000EFF3
+    [status] => COMPLETE
+    [total_amount] => 200.0
+    [transaction_uuid] => TXN1773458370786o528hvdla
+    [product_code] => EPAYTEST
+    [signed_field_names] => transaction_code,status,total_amount,transaction_uuid,product_code,signed_field_names
+    [signature] => IO5MTX2DQnVmKeh3hpzodo8mqskY/9GSI4UcHGQ6liA=
+)
+
+2026-03-14 03:21:32 - Payment status: COMPLETE
+2026-03-14 03:21:32 - Pending reservation from session: 
+2026-03-14 03:21:32 - Transaction UUID from session: 
+2026-03-14 03:21:32 - ERROR: No pending reservation in session
+2026-03-14 03:21:41 - === eSewa Success Callback Started ===
+2026-03-14 03:21:41 - GET params: Array
+(
+    [data] => eyJ0cmFuc2FjdGlvbl9jb2RlIjoiMDAwRUZGMyIsInN0YXR1cyI6IkNPTVBMRVRFIiwidG90YWxfYW1vdW50IjoiMjAwLjAiLCJ0cmFuc2FjdGlvbl91dWlkIjoiVFhOMTc3MzQ1ODM3MDc4Nm81MjhodmRsYSIsInByb2R1Y3RfY29kZSI6IkVQQVlURVNUIiwic2lnbmVkX2ZpZWxkX25hbWVzIjoidHJhbnNhY3Rpb25fY29kZSxzdGF0dXMsdG90YWxfYW1vdW50LHRyYW5zYWN0aW9uX3V1aWQscHJvZHVjdF9jb2RlLHNpZ25lZF9maWVsZF9uYW1lcyIsInNpZ25hdHVyZSI6IklPNU1UWDJEUW5WbUtlaDNocHpvZG84bXFza1kvOUdTSTRVY0hHUTZsaUE9In0=
+)
+
+2026-03-14 03:21:41 - Session ID: 78152d110bf4c563e4dc03614cdfd9c3
+2026-03-14 03:21:41 - User ID: 6
+2026-03-14 03:21:41 - Encoded data received: Yes
+2026-03-14 03:21:41 - Decoded payment data: Array
+(
+    [transaction_code] => 000EFF3
+    [status] => COMPLETE
+    [total_amount] => 200.0
+    [transaction_uuid] => TXN1773458370786o528hvdla
+    [product_code] => EPAYTEST
+    [signed_field_names] => transaction_code,status,total_amount,transaction_uuid,product_code,signed_field_names
+    [signature] => IO5MTX2DQnVmKeh3hpzodo8mqskY/9GSI4UcHGQ6liA=
+)
+
+2026-03-14 03:21:41 - Payment status: COMPLETE
+2026-03-14 03:21:41 - Pending reservation from session: 
+2026-03-14 03:21:41 - Transaction UUID from session: 
+2026-03-14 03:21:41 - ERROR: No pending reservation in session

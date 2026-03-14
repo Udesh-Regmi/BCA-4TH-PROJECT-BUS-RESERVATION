@@ -210,6 +210,47 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
+    if ($action === 'update_reservation') {
+        $id = (int) ($input['id'] ?? 0);
+        $bookingDate = sanitize($input['booking_date'] ?? '');
+        $seatNumber = (int) ($input['seat_number'] ?? 0);
+        $passengerName = sanitize($input['passenger_name'] ?? '');
+        $passengerPhone = sanitize($input['passenger_phone'] ?? '');
+        $source = sanitize($input['source'] ?? 'user');
+
+        $reservationData = $reservation->getById($id);
+
+        if (!$reservationData) {
+            setAlert('Reservation not found', 'danger');
+        } elseif ($reservationData['status'] === 'cancelled') {
+            setAlert('Cancelled reservations cannot be edited', 'warning');
+        } elseif (!isAdmin() && $reservationData['user_id'] != $_SESSION['user_id']) {
+            setAlert('Unauthorized action', 'danger');
+        } else {
+            $isAdminUser = isAdmin();
+            $withinEditWindow = $reservation->canUserEditWithinHours($reservationData['created_at'], 4);
+
+            if (!$isAdminUser && !$withinEditWindow) {
+                setAlert('You can update reservation details only within 4 hours of booking', 'warning');
+            } elseif ($seatNumber <= 0) {
+                setAlert('Invalid seat number selected', 'danger');
+            } elseif (!$reservation->isSeatAvailableForUpdate($id, $reservationData['bus_id'], $seatNumber, $bookingDate)) {
+                setAlert('Selected seat is already reserved for this date', 'danger');
+            } elseif ($reservation->updateReservationDetails($id, $bookingDate, $seatNumber, $passengerName, $passengerPhone)) {
+                setAlert('Reservation updated successfully', 'success');
+            } else {
+                setAlert('Failed to update reservation', 'danger');
+            }
+        }
+
+        if (isAdmin() || $source === 'admin') {
+            redirect(BASE_URL . '/pages/admin/reservations/edit.php?id=' . $id);
+        } else {
+            redirect(BASE_URL . '/pages/user/edit_reservation.php?id=' . $id);
+        }
+        exit();
+    }
+
     if ($action === 'cancel') {
         $id = (int) ($input['id'] ?? 0);
         $resData = $reservation->getById($id);
@@ -261,7 +302,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 
-    if ($action === 'delete') {
+    if ($action === 'delete' || $action === 'delete_reservation_by_user') {
         $id = (int) ($input['id'] ?? 0);
         $resData = $reservation->getById($id);
 
@@ -269,10 +310,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             setAlert('Reservation not found', 'danger');
         } elseif ($resData['user_id'] != $_SESSION['user_id'] && !isAdmin()) {
             setAlert('Unauthorized action', 'danger');
-        } elseif (isAdmin() && $reservation->delete($id)) {
-            setAlert('Reservation deleted successfully', 'success');
         } else {
-            setAlert('Failed to delete reservation', 'danger');
+            $canDelete = isAdmin() || ($resData['user_id'] == $_SESSION['user_id'] && $resData['status'] === 'cancelled');
+
+            if (!$canDelete) {
+                setAlert('Only cancelled reservations can be deleted from user account', 'warning');
+            } else {
+                $seatRestored = true;
+
+                // If reservation still occupied a seat, restore it before deleting.
+                if ($resData['status'] !== 'cancelled') {
+                    $seatRestored = $bus->restoreSeats($resData['bus_id'], 1);
+                }
+
+                if ($seatRestored && $reservation->delete($id)) {
+                    setAlert('Reservation deleted successfully', 'success');
+                } else {
+                    setAlert('Failed to delete reservation', 'danger');
+                }
+            }
         }
 
         if (isAdmin()) {
@@ -287,7 +343,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $id = (int) ($input['id'] ?? 0);
         $status = sanitize($input['status'] ?? '');
 
+        $resData = $reservation->getById($id);
+        $shouldRestoreSeat = $resData && $resData['status'] !== 'cancelled' && $status === 'cancelled';
+
         if ($reservation->updateStatus($id, $status)) {
+            if ($shouldRestoreSeat) {
+                $bus->restoreSeats($resData['bus_id'], 1);
+            }
             setAlert('Status updated successfully!', 'success');
         } else {
             setAlert('Failed to update status', 'danger');

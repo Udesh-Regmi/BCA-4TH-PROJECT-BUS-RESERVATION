@@ -71,6 +71,15 @@ include '../../UI/components/Alert.php';
                 <button type="submit" class="btn-submit">Update Profile</button>
             </form>
         </div>
+
+            <form method="POST" action="<?php echo BASE_URL; ?>/controllers/UserController.php" onsubmit="return confirm('Are you sure you want to delete your account? This cannot be undone.');">
+                <input type="hidden" name="action" value="delete_account">
+                <button type="submit" style="background: #dc3545; color: #ffffff; border: none;margin:2vw 0vw; padding: 0.75rem 1.75rem; border-radius: 5px; font-weight: 700; cursor: pointer; font-size: 1rem; letter-spacing: 0.3px;">
+                    <i class="fas fa-trash-alt"></i> Delete My Account
+                </button>
+                            <p style="color: #666; margin-bottom: 1.25rem;"> This will permanently delete your account and all associated data. This action cannot be undone.</p>
+
+            </form>
     </main>
 </div>
 

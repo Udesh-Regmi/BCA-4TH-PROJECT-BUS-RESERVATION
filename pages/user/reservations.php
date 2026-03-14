@@ -13,6 +13,19 @@ $reservation = new Reservation($db);
 
 $userReservations = $reservation->getByUserId($_SESSION['user_id']);
 
+function canEditReservationForUser($createdAt, $hours = 4) {
+    if (empty($createdAt)) {
+        return false;
+    }
+
+    $createdTimestamp = strtotime($createdAt);
+    if ($createdTimestamp === false) {
+        return false;
+    }
+
+    return time() <= strtotime("+{$hours} hours", $createdTimestamp);
+}
+
 
 
 $pageTitle = "My Reservations - " . SITE_NAME;
@@ -47,25 +60,36 @@ include '../../UI/components/Alert.php';
                 <tbody>
                     <?php if (empty($userReservations)): ?>
                         <tr>
-                            <td colspan="8" class="text-center">No reservations found</td>
+                            <td colspan="10" class="text-center">No reservations found</td>
                         </tr>
                     <?php else: ?>
                         <?php foreach ($userReservations as $res): ?>
+                            <?php
+                                $isActiveReservation = ($res['status'] === 'pending' || $res['status'] === 'confirmed');
+                                $withinEditWindow = canEditReservationForUser($res['created_at'], 4);
+                            ?>
                             <tr>
-                                <td><?php echo $res['id']; ?></td>
+                                <td><?php echo (int) $res['id']; ?></td>
 
-                                <td><?php echo $res['bus_number']; ?></td>
-                                <td><?php echo $res['bus_name']; ?></td>
-                                <td><?php echo $res['route_from'] . ' → ' . $res['route_to']; ?></td>
+                                <td><?php echo htmlspecialchars($res['bus_number']); ?></td>
+                                <td><?php echo htmlspecialchars($res['bus_name']); ?></td>
+                                <td><?php echo htmlspecialchars($res['route_from']) . ' → ' . htmlspecialchars($res['route_to']); ?></td>
                                 <td><?php echo formatDate($res['booking_date']); ?></td>
-                                <td><?php echo $res['seat_number']; ?></td>
+                                <td><?php echo htmlspecialchars($res['seat_number']); ?></td>
                                 <td>Rs. <?php echo number_format($res['total_amount'], 2); ?></td>
                                 <td><span
-                                        class="badge badge-<?php echo $res['status']; ?>"><?php echo ucfirst($res['status']); ?></span>
+                                    class="badge badge-<?php echo htmlspecialchars($res['status']); ?>"><?php echo ucfirst(htmlspecialchars($res['status'])); ?></span>
                                 </td>
-                                <td><?php echo ucfirst($res['payment_method']); ?></td>
+                                <td><?php echo ucfirst(htmlspecialchars($res['payment_method'])); ?></td>
                                 <td class="actions-cell">
-                                    <?php if ($res['status'] === 'pending' || $res['status'] === 'confirmed'): ?>
+                                    <?php if ($isActiveReservation && $withinEditWindow): ?>
+                                        <a class="btn-action btn-edit"
+                                            href="<?php echo BASE_URL; ?>/pages/user/edit_reservation.php?id=<?php echo (int) $res['id']; ?>">
+                                            Edit
+                                        </a>
+                                    <?php endif; ?>
+
+                                    <?php if ($isActiveReservation): ?>
                                         <form method="POST" action="<?php echo BASE_URL; ?>/controllers/ReservationController.php"
                                             style="display:inline;">
                                             <input type="hidden" name="action" value="cancel">

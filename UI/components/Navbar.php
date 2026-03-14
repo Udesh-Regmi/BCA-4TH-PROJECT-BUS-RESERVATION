@@ -65,7 +65,9 @@ if (!function_exists('isLoggedIn')) {
                 <li><a href="<?php echo BASE_URL; ?>/pages/public/register.php" class="btn-register">Register</a></li>
             <?php endif; ?>
         </ul>
-        <button class="mobile-toggle" id="mobile-toggle">
+        <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+
+        <button class="nav-toggle" id="mobile-toggle" type="button" aria-label="Toggle menu" aria-expanded="false" aria-controls="nav-menu">
             <i class="fas fa-bars"></i>
         </button>
     </div>
@@ -75,39 +77,102 @@ if (!function_exists('isLoggedIn')) {
 document.addEventListener('DOMContentLoaded', function() {
     const mobileToggle = document.getElementById('mobile-toggle');
     const navMenu = document.getElementById('nav-menu');
-    
-    if (mobileToggle && navMenu) {
-        mobileToggle.addEventListener('click', function() {
-            navMenu.classList.toggle('active');
-            const icon = this.querySelector('i');
-            if (icon) {
-                icon.classList.toggle('fa-bars');
-                icon.classList.toggle('fa-times');
-            }
-        });
-        
-        // Close menu when clicking outside
-        document.addEventListener('click', function(e) {
-            if (!mobileToggle.contains(e.target) && !navMenu.contains(e.target)) {
-                navMenu.classList.remove('active');
-                const icon = mobileToggle.querySelector('i');
-                if (icon) {
-                    icon.classList.remove('fa-times');
-                    icon.classList.add('fa-bars');
-                }
-            }
+    const navOverlay = document.getElementById('nav-overlay');
+    const dropdowns = document.querySelectorAll('.dropdown');
+
+    if (!mobileToggle || !navMenu || !navOverlay) {
+        return;
+    }
+
+    function closeAllDropdowns() {
+        dropdowns.forEach(function(dropdown) {
+            dropdown.classList.remove('active');
         });
     }
-    
-    // Dropdown for desktop
-    const dropdown = document.querySelector('.dropdown');
-    if (dropdown) {
-        dropdown.addEventListener('click', function(e) {
-            if (window.innerWidth <= 768) {
-                e.preventDefault();
-                this.classList.toggle('active');
+
+    function openMobileMenu() {
+        navMenu.classList.add('active');
+        navOverlay.classList.add('active');
+        document.body.classList.add('nav-open');
+        mobileToggle.setAttribute('aria-expanded', 'true');
+        const icon = mobileToggle.querySelector('i');
+        if (icon) {
+            icon.classList.remove('fa-bars');
+            icon.classList.add('fa-times');
+        }
+    }
+
+    function closeMobileMenu() {
+        navMenu.classList.remove('active');
+        navOverlay.classList.remove('active');
+        document.body.classList.remove('nav-open');
+        mobileToggle.setAttribute('aria-expanded', 'false');
+        const icon = mobileToggle.querySelector('i');
+        if (icon) {
+            icon.classList.remove('fa-times');
+            icon.classList.add('fa-bars');
+        }
+        closeAllDropdowns();
+    }
+
+    mobileToggle.addEventListener('click', function(e) {
+        e.stopPropagation();
+        if (navMenu.classList.contains('active')) {
+            closeMobileMenu();
+        } else {
+            openMobileMenu();
+        }
+    });
+
+    navOverlay.addEventListener('click', closeMobileMenu);
+
+    // Close mobile nav after selecting an actual route link (except account toggle).
+    navMenu.querySelectorAll('a').forEach(function(link) {
+        if (link.classList.contains('dropbtn')) {
+            return;
+        }
+        link.addEventListener('click', function() {
+            if (window.innerWidth < 992) {
+                closeMobileMenu();
             }
         });
-    }
+    });
+
+    // Dropdown click behavior for both desktop and mobile.
+    navMenu.querySelectorAll('.dropbtn').forEach(function(button) {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            const parentDropdown = button.closest('.dropdown');
+            if (!parentDropdown) {
+                return;
+            }
+
+            const willOpen = !parentDropdown.classList.contains('active');
+            closeAllDropdowns();
+            if (willOpen) {
+                parentDropdown.classList.add('active');
+            }
+        });
+    });
+
+    // Close dropdown when clicking outside navbar area.
+    document.addEventListener('click', function(e) {
+        const clickedInsideNav = navMenu.contains(e.target) || mobileToggle.contains(e.target);
+        if (!clickedInsideNav) {
+            closeAllDropdowns();
+            if (window.innerWidth < 992) {
+                closeMobileMenu();
+            }
+        }
+    });
+
+    // Keep state clean when switching breakpoints.
+    window.addEventListener('resize', function() {
+        if (window.innerWidth >= 992) {
+            closeMobileMenu();
+        }
+    });
 });
 </script>

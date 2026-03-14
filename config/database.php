@@ -3,7 +3,7 @@ class Database {
 
     private $db_name = "bus_reservation";
     private $username = "root";
-    private $password = "";
+    private $password = "Udesh_1109";
     private $socket = "/opt/lampp/var/mysql/mysql.sock";
 
     private $conn;

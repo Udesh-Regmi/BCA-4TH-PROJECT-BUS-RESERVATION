@@ -130,6 +130,9 @@ include '../../../UI/components/Alert.php';
 
         <div class="actions mt-20">
             <a href="index.php" class="btn-sm btn-secondary">← Back</a>
+            <?php if ($reservation['status'] !== 'cancelled'): ?>
+                <a href="edit.php?id=<?php echo htmlspecialchars($reservation['id']); ?>" class="btn-sm btn-secondary">Edit Reservation</a>
+            <?php endif; ?>
             <a href="print.php?id=<?php echo htmlspecialchars($reservation['id']); ?>" 
 class="btn-sm btn-secondary"   target="_blank">
     Print Ticket
@@ -139,7 +142,7 @@ class="btn-sm btn-secondary"   target="_blank">
             <?php if ($reservation['status'] !== 'cancelled'): ?>
                 <form method="POST" action="<?php echo BASE_URL; ?>/controllers/ReservationController.php" style="display:inline;">
                     <input type="hidden" name="action" value="cancel">
-                    <input type="hidden" name="id" value="<?php echo h($reservation['id']); ?>">
+                    <input type="hidden" name="id" value="<?php echo htmlspecialchars($reservation['id']); ?>">
                     <button type="submit" class="btn-sm btn-danger" onclick="return confirm('Cancel this reservation?')">Cancel</button>
                 </form>
             <?php endif; ?>
