@@ -2,8 +2,8 @@
 class Database {
 
     private $db_name = "bus_reservation";
-    private $username = "root";
-    private $password = "Udesh_1109";
+    private $username = "";
+    private $password = "";
     private $socket = "/opt/lampp/var/mysql/mysql.sock";
 
     private $conn;
